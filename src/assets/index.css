@@ -1,0 +1,25 @@
+html {
+  overflow-y: auto !important;
+}
+
+@keyframes bounce {
+  0% {
+    transform: scale(0);
+  }
+  50% {
+    transform: scale(1.25);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.list-enter-active,
+.list-leave-active {
+  animation: bounce 0.5s;
+}
+
+.list-enter-from,
+.list-leave-to {
+  animation: bounce 0.5s reverse;
+}
