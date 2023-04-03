@@ -1,30 +1,9 @@
 <template>
-  <div
-    @click="state.isActive = !state.isActive"
-    ref="speedDial"
-    class="pa-5 bg-blue rounded-lg"
-    :class="classes"
-    @mouseenter="openOnHover ? mouseEnter : null"
-    @mouseleave="openOnHover ? mouseLeave : null"
-  >
-    {{ state.isActive ? "Active" : "Inactive" }}
-    <slot name="activator" />
-    <transition-group
-      tag="div"
-      class="v-speed-dial__list"
-      :transition="transition || 'scale-transition'"
-    >
-      <div class="bg-red" v-for="(s, i) in slots.default" :key="i">
-        {{ s }}
-      </div>
-    </transition-group>
-    {{ slots }}
-  </div>
+  <template v-html="render" />
 </template>
 
 <script lang="ts" setup>
-import { onClickOutside } from "@vueuse/core";
-import { computed, reactive, ref, useSlots } from "vue";
+import { VNode, computed, h, reactive, useSlots } from "vue";
 
 const props = defineProps<{
   direction?: "top" | "right" | "bottom" | "left";
@@ -42,21 +21,9 @@ const props = defineProps<{
 
 const slots = useSlots();
 
-const speedDial = ref(null);
-
 const state = reactive({
   isActive: false,
 });
-
-const mouseEnter = () => {
-  state.isActive = true;
-};
-
-const mouseLeave = () => {
-  state.isActive = false;
-};
-
-onClickOutside(speedDial, () => (state.isActive = false));
 
 const classes = computed(() => ({
   "v-speed-dial": true,
@@ -69,6 +36,72 @@ const classes = computed(() => ({
   [`v-speed-dial--direction-${props.direction}`]: true,
   "v-speed-dial--is-active": state.isActive,
 }));
+
+const render = () => {
+  console.log(slots.default!());
+  let children: VNode[] = [];
+  const data: any = {
+    class: classes,
+    directives: [
+      {
+        name: "click-outside",
+        value: () => (state.isActive = false),
+      },
+    ],
+    on: {
+      click: () => (state.isActive = !state.isActive),
+    },
+  };
+
+  if (props.openOnHover) {
+    data.on!.mouseenter = () => (state.isActive = true);
+    data.on!.mouseleave = () => (state.isActive = false);
+  }
+
+  if (state.isActive) {
+    let btnCount = 0;
+    children = slots.default!().map((b, i) => {
+      console.log(b);
+      if (
+        b.tag &&
+        typeof b.componentOptions !== "undefined" &&
+        (b.componentOptions.Ctor.options.name === "v-btn" ||
+          b.componentOptions.Ctor.options.name === "v-tooltip")
+      ) {
+        btnCount++;
+        return h(
+          "div",
+          {
+            style: {
+              transitionDelay: btnCount * 0.05 + "s",
+            },
+            key: i,
+          },
+          [b]
+        );
+      } else {
+        b.key = i;
+        return b;
+      }
+    });
+  }
+
+  const list = h(
+    "transition-group",
+    {
+      class: "v-speed-dial__list",
+      props: {
+        name: props.transition,
+        mode: props.mode,
+        origin: props.origin,
+        tag: "div",
+      },
+    },
+    children
+  );
+
+  return h("div", data, [slots.activator!(), list]);
+};
 </script>
 
 <style lang="scss" scoped>
