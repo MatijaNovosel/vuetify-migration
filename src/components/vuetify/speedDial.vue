@@ -37,7 +37,7 @@ const classes = computed(() => ({
   "v-speed-dial--is-active": state.isActive,
 }));
 
-const render = () => {
+const render = computed(() => {
   console.log(slots.default!());
   let children: VNode[] = [];
   const data: any = {
@@ -65,8 +65,7 @@ const render = () => {
       if (
         b.tag &&
         typeof b.componentOptions !== "undefined" &&
-        (b.componentOptions.Ctor.options.name === "v-btn" ||
-          b.componentOptions.Ctor.options.name === "v-tooltip")
+        ["VTooltip", "VBtn"].includes(b.type.name)
       ) {
         btnCount++;
         return h(
@@ -100,8 +99,8 @@ const render = () => {
     children
   );
 
-  return h("div", data, [slots.activator!(), list]);
-};
+  return h("div", data, [...slots.activator!(), list]);
+});
 </script>
 
 <style lang="scss" scoped>
