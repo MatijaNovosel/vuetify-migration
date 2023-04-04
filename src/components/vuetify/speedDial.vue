@@ -1,9 +1,15 @@
 <template>
   <div :class="classes" ref="speedDial">
     <slot name="activator" :activate="activate" />
-    <div class="v-speed-dial__list" v-if="state.active">
+    <transition-group
+      @click="state.active = !state.active"
+      tag="div"
+      transition="scale"
+      class="v-speed-dial__list"
+      v-if="state.active"
+    >
       <slot />
-    </div>
+    </transition-group>
   </div>
 </template>
 
@@ -53,11 +59,8 @@ const classes = computed(() => ({
 </script>
 
 <style lang="scss" scoped>
-$speed-dial-padding: 16px !default;
-$speed-dial-button-margin: 6px !default;
-$speed-dial-z-index: 1 !default;
-$spacer: 4px !default;
-$grid-gutter: $spacer * 6 !default;
+$speed-dial-padding: 16px;
+$grid-gutter: 24px;
 $grid-gutters: (
   "xs": calc($grid-gutter / 12),
   "sm": calc($grid-gutter / 6),
@@ -68,7 +71,7 @@ $grid-gutters: (
 
 .v-speed-dial {
   position: relative;
-  z-index: $speed-dial-z-index;
+  z-index: 1;
 
   &--absolute {
     position: absolute;
@@ -153,7 +156,7 @@ $grid-gutters: (
   position: absolute;
 
   .v-btn {
-    margin: $speed-dial-button-margin;
+    margin: 6px;
   }
 }
 

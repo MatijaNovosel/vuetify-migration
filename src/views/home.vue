@@ -6,7 +6,7 @@
         <v-btn @click="activate()" color="error" icon="mdi-vuetify" />
       </template>
       <v-btn variant="flat" color="success"> A </v-btn>
-      <v-btn class="mx-2" variant="flat" color="success"> B </v-btn>
+      <v-btn variant="flat" color="success"> B </v-btn>
       <v-btn variant="flat" color="success"> C </v-btn>
     </speed-dial>
   </div>
