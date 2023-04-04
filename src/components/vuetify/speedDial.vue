@@ -1,9 +1,15 @@
 <template>
-  <template v-html="render" />
+  <div :class="classes" ref="speedDial">
+    <slot name="activator" :activate="activate" />
+    <div class="v-speed-dial__list" v-if="state.active">
+      <slot />
+    </div>
+  </div>
 </template>
 
 <script lang="ts" setup>
-import { VNode, computed, h, reactive, useSlots } from "vue";
+import { onClickOutside } from "@vueuse/core";
+import { computed, reactive, ref } from "vue";
 
 const props = defineProps<{
   direction?: "top" | "right" | "bottom" | "left";
@@ -19,10 +25,18 @@ const props = defineProps<{
   origin?: string;
 }>();
 
-const slots = useSlots();
+const speedDial = ref(null);
+
+onClickOutside(speedDial, () => {
+  state.active = false;
+});
+
+const activate = () => {
+  state.active = !state.active;
+};
 
 const state = reactive({
-  isActive: false,
+  active: false,
 });
 
 const classes = computed(() => ({
@@ -34,73 +48,8 @@ const classes = computed(() => ({
   "v-speed-dial--absolute": props.absolute,
   "v-speed-dial--fixed": props.fixed,
   [`v-speed-dial--direction-${props.direction}`]: true,
-  "v-speed-dial--is-active": state.isActive,
+  "v-speed-dial--is-active": state.active,
 }));
-
-const render = computed(() => {
-  console.log(slots.default!());
-  let children: VNode[] = [];
-  const data: any = {
-    class: classes,
-    directives: [
-      {
-        name: "click-outside",
-        value: () => (state.isActive = false),
-      },
-    ],
-    on: {
-      click: () => (state.isActive = !state.isActive),
-    },
-  };
-
-  if (props.openOnHover) {
-    data.on!.mouseenter = () => (state.isActive = true);
-    data.on!.mouseleave = () => (state.isActive = false);
-  }
-
-  if (state.isActive) {
-    let btnCount = 0;
-    children = slots.default!().map((b, i) => {
-      console.log(b);
-      if (
-        b.tag &&
-        typeof b.componentOptions !== "undefined" &&
-        ["VTooltip", "VBtn"].includes(b.type.name)
-      ) {
-        btnCount++;
-        return h(
-          "div",
-          {
-            style: {
-              transitionDelay: btnCount * 0.05 + "s",
-            },
-            key: i,
-          },
-          [b]
-        );
-      } else {
-        b.key = i;
-        return b;
-      }
-    });
-  }
-
-  const list = h(
-    "transition-group",
-    {
-      class: "v-speed-dial__list",
-      props: {
-        name: props.transition,
-        mode: props.mode,
-        origin: props.origin,
-        tag: "div",
-      },
-    },
-    children
-  );
-
-  return h("div", data, [...slots.activator!(), list]);
-});
 </script>
 
 <style lang="scss" scoped>
