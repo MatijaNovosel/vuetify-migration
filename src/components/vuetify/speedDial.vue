@@ -1,14 +1,13 @@
 <template>
   <div :class="classes" ref="speedDial">
-    <slot name="activator" :activate="activate" />
+    <slot name="activator" :activate="toggle" />
     <transition-group
-      @click="state.active = !state.active"
+      @click="toggle"
       tag="div"
-      transition="scale"
+      name="scale-transition"
       class="v-speed-dial__list"
-      v-if="state.active"
     >
-      <slot />
+      <slot v-if="state.active" />
     </transition-group>
   </div>
 </template>
@@ -33,13 +32,9 @@ const props = defineProps<{
 
 const speedDial = ref(null);
 
-onClickOutside(speedDial, () => {
-  state.active = false;
-});
+onClickOutside(speedDial, () => (state.active = false));
 
-const activate = () => {
-  state.active = !state.active;
-};
+const toggle = () => (state.active = !state.active);
 
 const state = reactive({
   active: false,
@@ -154,10 +149,6 @@ $grid-gutters: (
   justify-content: center;
   padding: $speed-dial-padding 0;
   position: absolute;
-
-  .v-btn {
-    margin: 6px;
-  }
 }
 
 .v-speed-dial:not(.v-speed-dial--is-active) .v-speed-dial__list {

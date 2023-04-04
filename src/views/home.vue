@@ -5,9 +5,9 @@
       <template #activator="{ activate }">
         <v-btn @click="activate()" color="error" icon="mdi-vuetify" />
       </template>
-      <v-btn variant="flat" color="success"> A </v-btn>
-      <v-btn variant="flat" color="success"> B </v-btn>
-      <v-btn variant="flat" color="success"> C </v-btn>
+      <v-btn color="success" icon="mdi-vuetify" />
+      <v-btn class="mx-2" color="info" icon="mdi-vuetify" />
+      <v-btn color="error" icon="mdi-vuetify" />
     </speed-dial>
   </div>
 </template>
