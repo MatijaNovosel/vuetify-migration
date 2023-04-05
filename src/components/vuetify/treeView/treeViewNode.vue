@@ -1,37 +1,13 @@
 <template>
-  <div class="bg-blue pa-4">Hello</div>
+  <div :class="classes" class="v-treeview-node">Node</div>
 </template>
 
 <script lang="ts" setup>
 import { getObjectValueByPath } from "@/utils/helpers";
 import { computed, reactive } from "vue";
+import { TreeViewNodeProps } from "./models";
 
-const props = defineProps<{
-  level: number;
-  item: Object | null;
-  parentIsDisabled: boolean;
-  activatable: boolean;
-  activeClass: string;
-  color: string;
-  disablePerNode: boolean;
-  expandIcon: string;
-  indeterminateIcon: string;
-  itemChildren: string;
-  itemDisabled: string;
-  itemKey: string;
-  itemText: string;
-  loadChildren: (item: any) => Promise<void>;
-  loadingIcon: string;
-  offIcon: string;
-  onIcon: string;
-  openOnClick: boolean;
-  rounded: boolean;
-  selectable: boolean;
-  selectedColor: string;
-  shaped: boolean;
-  transition: boolean;
-  selectionType: "leaf" | "independent";
-}>();
+const props = defineProps<TreeViewNodeProps>();
 
 const state = reactive({
   hasLoaded: false,
@@ -41,6 +17,15 @@ const state = reactive({
   isOpen: false,
   isSelected: false,
 });
+
+const classes = computed(() => ({
+  "v-treeview-node--leaf": !hasChildren.value,
+  "v-treeview-node--click": props.openOnClick,
+  "v-treeview-node--disabled": disabled.value,
+  "v-treeview-node--rounded": props.rounded,
+  "v-treeview-node--shaped": props.shaped,
+  "v-treeview-node--selected": state.isSelected,
+}));
 
 const disabled = computed(() => {
   return (
