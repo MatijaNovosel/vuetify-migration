@@ -56,7 +56,7 @@ export function sanitizeDateString(
   type: "date" | "month" | "year"
 ): string {
   const [year, month = 1, date = 1] = dateString.split("-");
-  return `${year}-${pad(month)}-${pad(date)}`.substr(
+  return `${year}-${pad(month)}-${pad(date)}`.substring(
     0,
     { date: 10, month: 7, year: 4 }[type]
   );
