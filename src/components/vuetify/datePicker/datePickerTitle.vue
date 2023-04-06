@@ -20,13 +20,13 @@
 import { computed, reactive } from "vue";
 
 const props = defineProps<{
-  date: string;
-  disabled: boolean;
-  readonly: boolean;
-  selectingYear: boolean;
-  value: string;
-  year: number | string;
-  yearIcon: string;
+  date?: string;
+  disabled?: boolean;
+  readonly?: boolean;
+  selectingYear?: boolean;
+  value?: string;
+  year?: number | string;
+  yearIcon?: string;
 }>();
 
 const state = reactive({

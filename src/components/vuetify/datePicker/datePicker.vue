@@ -1,10 +1,13 @@
 <template>
-  <div>Hello</div>
+  <div>
+    <date-picker-title />
+  </div>
 </template>
 
 <script lang="ts" setup>
 import { pad, sanitizeDateString, wrapInArray } from "@/utils/helpers";
 import { computed, reactive } from "vue";
+import DatePickerTitle from "./datePickerTitle.vue";
 import {
   createNativeLocaleFormatter,
   daysInMonth,
@@ -27,49 +30,49 @@ const titleFormats: Record<string, Intl.DateTimeFormatOptions> = {
 const emit = defineEmits(["input", "change"]);
 
 const props = defineProps<{
-  activePicker: ActivePicker;
-  allowedDates: DatePickerAllowedDatesFunction | undefined;
-  dayFormat: DatePickerAllowedDatesFunction | undefined;
-  disabled: boolean;
-  events: any[] | Function | Object;
-  eventColor: any[] | Function | Object | string;
-  firstDayOfWeek: string | number;
-  headerDateFormat: DatePickerFormatter;
-  localeFirstDayOfYear: string | number;
+  activePicker?: ActivePicker;
+  allowedDates?: DatePickerAllowedDatesFunction | undefined;
+  dayFormat?: DatePickerAllowedDatesFunction | undefined;
+  disabled?: boolean;
+  events?: any[] | Function | Object;
+  eventColor?: any[] | Function | Object | string;
+  firstDayOfWeek?: string | number;
+  headerDateFormat?: DatePickerFormatter;
+  localeFirstDayOfYear?: string | number;
   max: string;
   min: string;
-  monthFormat: DatePickerFormatter | undefined;
-  multiple: boolean;
-  nextIcon: string;
-  nextMonthAriaLabel: string;
-  nextYearAriaLabel: string;
-  pickerDate: string;
-  prevIcon: string;
-  prevMonthAriaLabel: string;
-  prevYearAriaLabel: string;
-  range: boolean;
-  reactive: boolean;
-  readonly: boolean;
-  scrollable: boolean;
-  showCurrent: boolean | string;
-  selectedItemsText: string;
-  showAdjacentMonths: boolean;
-  showWeek: boolean;
-  titleDateFormat:
+  monthFormat?: DatePickerFormatter | undefined;
+  multiple?: boolean;
+  nextIcon?: string;
+  nextMonthAriaLabel?: string;
+  nextYearAriaLabel?: string;
+  pickerDate?: string;
+  prevIcon?: string;
+  prevMonthAriaLabel?: string;
+  prevYearAriaLabel?: string;
+  range?: boolean;
+  reactive?: boolean;
+  readonly?: boolean;
+  scrollable?: boolean;
+  showCurrent?: boolean | string;
+  selectedItemsText?: string;
+  showAdjacentMonths?: boolean;
+  showWeek?: boolean;
+  titleDateFormat?:
     | DatePickerFormatter
     | ((date: string[]) => string)
     | undefined;
   type: DatePickerType;
   value: DatePickerValue;
-  weekdayFormat: DatePickerFormatter | undefined;
-  yearFormat: DatePickerFormatter | undefined;
-  yearIcon: string;
-  locale: string;
-  flat: boolean;
-  fullWidth: boolean;
-  headerColor: string;
-  landscape: boolean;
-  noTitle: boolean;
+  weekdayFormat?: DatePickerFormatter | undefined;
+  yearFormat?: DatePickerFormatter | undefined;
+  yearIcon?: string;
+  locale?: string;
+  flat?: boolean;
+  fullWidth?: boolean;
+  headerColor?: string;
+  landscape?: boolean;
+  noTitle?: boolean;
 }>();
 
 const now = new Date();
