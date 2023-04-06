@@ -1,12 +1,12 @@
 <template>
   <div class="v-date-picker-title" :class="classes">
-    <div class="v-picker__title__btn v-date-picker-title__year">
+    <div class="v-date-picker-title__year">
       {{ props.year }}
       <v-icon v-if="yearIcon">
         {{ yearIcon }}
       </v-icon>
     </div>
-    <div class="v-picker__title__btn v-date-picker-title__date">
+    <div class="v-date-picker-title__date">
       <transition :class="computedTransition">
         <div>
           {{ date || "&nbsp;" }}
@@ -52,25 +52,24 @@ const classes = computed(() => ({
   flex-wrap: wrap
   line-height: 1
 
-  .v-picker__title__btn
-    &__year
-      align-items: center
-      display: inline-flex
-      font-size: $date-picker-title-year-font-size
-      font-weight: $date-picker-title-year-font-weight
-      margin-bottom: $date-picker-title-year-bottom-margin
+  &__year
+    align-items: center
+    display: inline-flex
+    font-size: $date-picker-title-year-font-size
+    font-weight: $date-picker-title-year-font-weight
+    margin-bottom: $date-picker-title-year-bottom-margin
 
-    &__date
-      font-size: $date-picker-title-date-font-size
-      text-align: left
-      font-weight: $date-picker-title-date-font-weight
+  &__date
+    font-size: $date-picker-title-date-font-size
+    text-align: left
+    font-weight: $date-picker-title-date-font-weight
+    position: relative
+    overflow: hidden
+    padding-bottom: 8px
+    margin-bottom: -8px
+
+    > div
       position: relative
-      overflow: hidden
-      padding-bottom: 8px
-      margin-bottom: -8px
-
-      > div
-        position: relative
 
   &--disabled
     pointer-events: none

@@ -1,12 +1,14 @@
 <template>
   <div>
-    <date-picker-title :year="2012" />
+    <date-picker-title :year="2012" :date="new Date().toISOString()" />
+    <date-picker-header :value="new Date().toISOString()" />
   </div>
 </template>
 
 <script lang="ts" setup>
 import { pad, sanitizeDateString, wrapInArray } from "@/utils/helpers";
 import { computed, reactive } from "vue";
+import DatePickerHeader from "./datePickerHeader.vue";
 import DatePickerTitle from "./datePickerTitle.vue";
 import {
   createNativeLocaleFormatter,
