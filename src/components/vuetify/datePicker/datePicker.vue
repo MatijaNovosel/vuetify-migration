@@ -1,6 +1,6 @@
 <template>
   <div>
-    <date-picker-title />
+    <date-picker-title :year="2012" />
   </div>
 </template>
 

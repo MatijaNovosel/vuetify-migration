@@ -1,8 +1,13 @@
 <template>
   <div class="d-flex flex-column justify-center items-center h-100 text-center">
     <span> Welcome to the home page </span>
-    <div>
-      <date-picker max="" min="" type="date" value="" />
+    <div class="mt-5">
+      <date-picker
+        max="2020-04-12"
+        min="2020-01-24"
+        type="date"
+        :value="state.date.toISOString()"
+      />
     </div>
     <speed-dial bottom right fixed direction="left">
       <template #activator="{ activate }">
@@ -18,4 +23,9 @@
 <script lang="ts" setup>
 import datePicker from "@/components/vuetify/datePicker/datePicker.vue";
 import speedDial from "@/components/vuetify/speedDial.vue";
+import { reactive } from "vue";
+
+const state = reactive({
+  date: new Date(),
+});
 </script>
