@@ -1,13 +1,15 @@
 <template>
   <div>
-    <date-picker-title :year="2012" :date="new Date().toISOString()" />
-    <date-picker-header :value="new Date().toISOString()" />
+    <date-picker-title :year="2012" date="2020-04-12" />
+    <date-picker-header value="2020-04-12" />
+    <date-picker-date-table />
   </div>
 </template>
 
 <script lang="ts" setup>
 import { pad, sanitizeDateString, wrapInArray } from "@/utils/helpers";
 import { computed, reactive } from "vue";
+import DatePickerDateTable from "./datePickerDateTable.vue";
 import DatePickerHeader from "./datePickerHeader.vue";
 import DatePickerTitle from "./datePickerTitle.vue";
 import {
