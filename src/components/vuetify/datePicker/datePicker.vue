@@ -5,9 +5,14 @@
 <script lang="ts" setup>
 import { pad, sanitizeDateString, wrapInArray } from "@/utils/helpers";
 import { computed, reactive } from "vue";
-import { createNativeLocaleFormatter } from "./helpers";
+import {
+  createNativeLocaleFormatter,
+  daysInMonth,
+  isDateAllowed,
+} from "./helpers";
 import {
   ActivePicker,
+  DatePickerAllowedDatesFunction,
   DatePickerFormatter,
   DatePickerType,
   DatePickerValue,
@@ -23,8 +28,8 @@ const emit = defineEmits(["input", "change"]);
 
 const props = defineProps<{
   activePicker: ActivePicker;
-  allowedDates: (date: string) => boolean | undefined;
-  dayFormat: (date: string) => boolean | undefined;
+  allowedDates: DatePickerAllowedDatesFunction | undefined;
+  dayFormat: DatePickerAllowedDatesFunction | undefined;
   disabled: boolean;
   events: any[] | Function | Object;
   eventColor: any[] | Function | Object | string;
@@ -231,5 +236,58 @@ const checkMultipleProp = () => {
       } ${expected}, got ${valueType}`
     );
   }
+};
+
+const isDateAllowedFn = (value: string) =>
+  isDateAllowed(value, props.min, props.max, props.allowedDates);
+
+const yearClick = (value: number) => {
+  state.inputYear = value;
+  if (props.type === "month") {
+    state.tableDate = `${value}`;
+  } else {
+    state.tableDate = `${value}-${pad((tableMonth.value || 0) + 1)}`;
+  }
+  state.internalActivePicker = "MONTH";
+  if (
+    props.reactive &&
+    !props.readonly &&
+    !isMultiple.value &&
+    isDateAllowedFn(inputDate.value)
+  ) {
+    emit("input", inputDate.value);
+  }
+};
+
+const monthClick = (value: string) => {
+  state.inputYear = parseInt(value.split("-")[0], 10);
+  state.inputMonth = parseInt(value.split("-")[1], 10) - 1;
+  if (props.type === "date") {
+    if (state.inputDay) {
+      state.inputDay = Math.min(
+        state.inputDay,
+        daysInMonth(state.inputYear, state.inputMonth + 1)
+      );
+    }
+    state.tableDate = value;
+    state.internalActivePicker = "DATE";
+    if (
+      props.reactive &&
+      !props.readonly &&
+      !isMultiple.value &&
+      isDateAllowedFn(inputDate.value)
+    ) {
+      emit("input", inputDate.value);
+    }
+  } else {
+    emitInput(inputDate.value);
+  }
+};
+
+const dateClick = (value: string) => {
+  state.inputYear = parseInt(value.split("-")[0], 10);
+  state.inputMonth = parseInt(value.split("-")[1], 10) - 1;
+  state.inputDay = parseInt(value.split("-")[2], 10);
+  emitInput(inputDate.value);
 };
 </script>

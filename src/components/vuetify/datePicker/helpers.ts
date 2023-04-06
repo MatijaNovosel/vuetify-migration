@@ -1,4 +1,5 @@
 import { pad } from "@/utils/helpers";
+import { DAYS_IN_MONTH, DAYS_IN_MONTH_LEAP } from "./constants";
 import {
   DatePickerAllowedDatesFunction,
   DatePickerFormatter,
@@ -42,4 +43,12 @@ export function isDateAllowed(
     (!min || date >= min.substr(0, 10)) &&
     (!max || date <= max)
   );
+}
+
+export function isLeapYear(year: number): boolean {
+  return (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
+}
+
+export function daysInMonth(year: number, month: number) {
+  return isLeapYear(year) ? DAYS_IN_MONTH_LEAP[month] : DAYS_IN_MONTH[month];
 }

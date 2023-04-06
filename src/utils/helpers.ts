@@ -1,4 +1,6 @@
-export const test = () => {};
+export function kebabCase(str: string): string {
+  return (str || "").replace(/([a-z])([A-Z])/g, "$1-$2").toLowerCase();
+}
 
 export function getNestedValue(
   obj: any,
