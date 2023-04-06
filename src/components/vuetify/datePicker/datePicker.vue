@@ -5,48 +5,21 @@
 <script lang="ts" setup>
 import { pad, sanitizeDateString, wrapInArray } from "@/utils/helpers";
 import { computed, reactive } from "vue";
-
-type ActivePicker = "DATE" | "MONTH" | "YEAR";
-type DatePickerType = "date" | "month";
-type DatePickerValue = string | string[] | undefined;
-type DatePickerFormatter = (date: string) => string;
-
-interface SubstrOptions {
-  start?: number;
-  length: number;
-}
-
-function createNativeLocaleFormatter(
-  locale: string | undefined,
-  options: Intl.DateTimeFormatOptions,
-  substrOptions: SubstrOptions = { start: 0, length: 0 }
-): DatePickerFormatter | undefined {
-  const makeIsoString = (dateString: string) => {
-    const [year, month, date] = dateString.trim().split(" ")[0].split("-");
-    return [pad(year, 4), pad(month || 1), pad(date || 1)].join("-");
-  };
-  try {
-    const intlFormatter = new Intl.DateTimeFormat(locale || undefined, options);
-    return (dateString: string) =>
-      intlFormatter.format(
-        new Date(`${makeIsoString(dateString)}T00:00:00+00:00`)
-      );
-  } catch (e) {
-    return substrOptions.start || substrOptions.length
-      ? (dateString: string) =>
-          makeIsoString(dateString).substr(
-            substrOptions.start || 0,
-            substrOptions.length
-          )
-      : undefined;
-  }
-}
+import { createNativeLocaleFormatter } from "./helpers";
+import {
+  ActivePicker,
+  DatePickerFormatter,
+  DatePickerType,
+  DatePickerValue,
+} from "./models";
 
 const titleFormats: Record<string, Intl.DateTimeFormatOptions> = {
   year: { year: "numeric", timeZone: "UTC" },
   month: { month: "long", timeZone: "UTC" },
   date: { weekday: "short", month: "short", day: "numeric", timeZone: "UTC" },
 };
+
+const emit = defineEmits(["input", "change"]);
 
 const props = defineProps<{
   activePicker: ActivePicker;
@@ -224,4 +197,39 @@ const defaultTitleDateFormatter = computed(() => {
       .replace(", ", ",<br>");
   return props.landscape ? landscapeFormatter : titleDateFormatter;
 });
+
+const emitInput = (newInput: string) => {
+  if (props.range) {
+    if (multipleValue.value.length !== 1) {
+      emit("input", [newInput]);
+    } else {
+      const output = [multipleValue.value[0], newInput];
+      emit("input", output);
+      emit("change", output);
+    }
+    return;
+  }
+
+  const output = props.multiple
+    ? multipleValue.value.indexOf(newInput) === -1
+      ? multipleValue.value.concat([newInput])
+      : multipleValue.value.filter((x) => x !== newInput)
+    : newInput;
+
+  emit("input", output);
+  props.multiple || emit("change", newInput);
+};
+
+const checkMultipleProp = () => {
+  if (props.value == null) return;
+  const valueType = props.value.constructor.name;
+  const expected = isMultiple.value ? "Array" : "String";
+  if (valueType !== expected) {
+    console.warn(
+      `Value must be ${
+        isMultiple.value ? "an" : "a"
+      } ${expected}, got ${valueType}`
+    );
+  }
+};
 </script>
