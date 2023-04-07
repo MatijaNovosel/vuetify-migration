@@ -1,8 +1,8 @@
 <template>
   <div>
-    <date-picker-title :year="2012" date="2020-04-12" />
-    <date-picker-header value="2020-04-12" />
-    <date-picker-date-table table-date="2020-04-12" />
+    <date-picker-title :year="2012" date="2023-04-12" />
+    <date-picker-header value="2023-04-12" />
+    <date-picker-date-table table-date="2023-04-12" />
   </div>
 </template>
 

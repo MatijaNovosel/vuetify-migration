@@ -49,16 +49,15 @@ const props = defineProps<{
   currentLocale?: string;
 }>();
 
-const formatter = computed(() => {
-  return (
+const formatter = computed(
+  () =>
     props.format ||
     createNativeLocaleFormatter(
       props.currentLocale,
       { day: "numeric", timeZone: "UTC" },
       { start: 8, length: 2 }
     )
-  );
-});
+);
 
 const weekdayFormatter = computed(
   () =>
@@ -104,11 +103,12 @@ const getWeekNumber = (dayInMonth: number) =>
   );
 
 const rows = computed(() => {
-  const rows: string[][] = [[]];
+  const rows: string[][] = [];
   let row = [];
   const daysInMonth = new Date(
     displayedYear.value,
-    displayedMonth.value + 1
+    displayedMonth.value + 1,
+    0
   ).getDate();
   let day = weekDaysBeforeFirstDayOfTheMonth();
   const prevMonthYear = displayedMonth.value
@@ -120,16 +120,16 @@ const rows = computed(() => {
     displayedMonth.value,
     0
   ).getDate();
-  const cellsInRow = props.showWeek ? 8 : 7;
+  const cellsInRow = 7;
 
   for (day = 1; day <= daysInMonth; day++) {
     const date = `${displayedYear.value}-${pad(displayedMonth.value + 1)}-${pad(
       day
     )}`;
 
-    row.push(date);
+    row.push(formatter.value!(date));
 
-    if (rows.length % cellsInRow === 0) {
+    if (row.length % cellsInRow === 0) {
       rows.push(row);
       row = [];
     }
