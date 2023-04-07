@@ -1,7 +1,7 @@
 <template>
   <div class="v-date-picker-title v-picker__title" :class="classes">
     <div class="v-picker__title__btn v-date-picker-title__year">
-      {{ props.year }}
+      {{ year }}
       <v-icon v-if="yearIcon">
         {{ yearIcon }}
       </v-icon>

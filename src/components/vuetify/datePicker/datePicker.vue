@@ -1,11 +1,19 @@
 <template>
   <div :style="styles">
-    <date-picker-title :color="color" :year="2012" :date="displayDate" />
-    <date-picker-header :color="color" :value="displayDate" />
+    <date-picker-title
+      v-if="!noTitle"
+      :color="color"
+      :date="pickerTitle"
+      :year="pad(tableYear, 4)"
+    />
+    <date-picker-header
+      :color="color"
+      :value="`${pad(tableYear, 4)}-${pad(tableMonth + 1)}`"
+    />
     <date-picker-date-table
       :value="value"
       :color="color"
-      :table-date="displayDate"
+      :table-date="`${pad(tableYear, 4)}-${pad(tableMonth + 1)}`"
       @input="dateClick"
     />
   </div>
@@ -18,7 +26,7 @@ import {
   sanitizeDateString,
   wrapInArray,
 } from "@/utils/helpers";
-import { computed, reactive } from "vue";
+import { computed, onMounted, reactive, watch } from "vue";
 import DatePickerDateTable from "./datePickerDateTable.vue";
 import DatePickerHeader from "./datePickerHeader.vue";
 import DatePickerTitle from "./datePickerTitle.vue";
@@ -92,12 +100,16 @@ const props = defineProps<{
 }>();
 
 const styles = computed(() => ({
-  width: convertToUnit(props.width || 290),
+  width: props.fullWidth ? undefined : convertToUnit(props.width || 290),
 }));
 
-const now = new Date();
+const pickerTitle = computed(() =>
+  (formatters.value.titleDate as (value: any) => string)!(
+    isMultiple.value ? multipleValue.value : props.value
+  )
+);
 
-const displayDate = computed(() => now.toISOString().substring(0, 10));
+const now = new Date();
 
 const state = reactive({
   internalActivePicker: "",
@@ -105,25 +117,10 @@ const state = reactive({
   inputMonth: null as number | null,
   inputYear: null as number | null,
   isReversing: false,
-  now: new Date(),
-  tableDate: (() => {
-    if (props.pickerDate) return props.pickerDate;
-    const multipleValue = wrapInArray(props.value);
-    const date =
-      multipleValue[multipleValue.length - 1] ||
-      (typeof props.showCurrent === "string"
-        ? props.showCurrent
-        : `${now.getFullYear()}-${now.getMonth() + 1}`);
-    return sanitizeDateString(
-      date as string,
-      props.type === "date" ? "month" : "year"
-    );
-  })(),
+  tableDate: now.toISOString().substring(0, 10),
 });
 
-const multipleValue = computed(() => {
-  return wrapInArray(props.value);
-});
+const multipleValue = computed(() => wrapInArray(props.value));
 
 const isMultiple = computed(() => props.multiple || props.range);
 
@@ -183,30 +180,26 @@ const maxYear = computed(() =>
   props.max ? sanitizeDateString(props.max, "year") : null
 );
 
-const formatters = computed(() => {
-  return {
-    year:
-      props.yearFormat ||
-      createNativeLocaleFormatter(
-        props.locale,
-        { year: "numeric", timeZone: "UTC" },
-        { length: 4 }
-      ),
-    titleDate:
-      props.titleDateFormat ||
-      (isMultiple.value
-        ? defaultTitleMultipleDateFormatter.value
-        : defaultTitleDateFormatter.value),
-  };
-});
+const formatters = computed(() => ({
+  year:
+    props.yearFormat ||
+    createNativeLocaleFormatter(
+      props.locale,
+      { year: "numeric", timeZone: "UTC" },
+      { length: 4 }
+    ),
+  titleDate:
+    props.titleDateFormat ||
+    (isMultiple.value
+      ? defaultTitleMultipleDateFormatter.value
+      : defaultTitleDateFormatter.value),
+}));
 
-const defaultTitleMultipleDateFormatter = computed(() => {
-  return (dates: string[]) => {
-    if (!dates.length) return "-";
-    if (dates.length === 1) return defaultTitleDateFormatter.value!(dates[0]);
-    return "";
-    // this.$vuetify.lang.t(props.selectedItemsText, dates.length);
-  };
+const defaultTitleMultipleDateFormatter = computed(() => (dates: string[]) => {
+  if (!dates.length) return "-";
+  if (dates.length === 1) return defaultTitleDateFormatter.value!(dates[0]);
+  return "";
+  // this.$vuetify.lang.t(props.selectedItemsText, dates.length);
 });
 
 const defaultTitleDateFormatter = computed(() => {
@@ -315,4 +308,28 @@ const dateClick = (value: string) => {
   state.inputDay = parseInt(value.split("-")[2], 10);
   emitInput(inputDate.value);
 };
+
+watch(
+  () => state.tableDate,
+  (val) => {
+    console.log(val);
+  },
+  {
+    immediate: true,
+  }
+);
+
+onMounted(() => {
+  if (props.pickerDate) return props.pickerDate;
+  const multipleValue = wrapInArray(props.value);
+  const date =
+    multipleValue[multipleValue.length - 1] ||
+    (typeof props.showCurrent === "string"
+      ? props.showCurrent
+      : `${now.getFullYear()}-${now.getMonth() + 1}`);
+  state.tableDate = sanitizeDateString(
+    date as string,
+    props.type === "date" ? "month" : "year"
+  );
+});
 </script>
