@@ -1,13 +1,18 @@
 <template>
-  <div>
-    <date-picker-title :year="2012" date="2023-04-12" />
-    <date-picker-header value="2023-04-12" />
-    <date-picker-date-table table-date="2023-04-12" />
+  <div :style="styles">
+    <date-picker-title :color="color" :year="2012" :date="displayDate" />
+    <date-picker-header :value="displayDate" />
+    <date-picker-date-table :table-date="displayDate" />
   </div>
 </template>
 
 <script lang="ts" setup>
-import { pad, sanitizeDateString, wrapInArray } from "@/utils/helpers";
+import {
+  convertToUnit,
+  pad,
+  sanitizeDateString,
+  wrapInArray,
+} from "@/utils/helpers";
 import { computed, reactive } from "vue";
 import DatePickerDateTable from "./datePickerDateTable.vue";
 import DatePickerHeader from "./datePickerHeader.vue";
@@ -77,9 +82,17 @@ const props = defineProps<{
   headerColor?: string;
   landscape?: boolean;
   noTitle?: boolean;
+  width?: number | string;
+  color?: string;
 }>();
 
+const styles = computed(() => ({
+  width: convertToUnit(props.width || 290),
+}));
+
 const now = new Date();
+
+const displayDate = computed(() => now.toISOString().substring(0, 10));
 
 const state = reactive({
   internalActivePicker: "",

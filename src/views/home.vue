@@ -1,11 +1,12 @@
 <template>
   <div class="d-flex flex-column justify-center items-center h-100 text-center">
     <span> Welcome to the home page </span>
-    <div class="mt-5">
+    <div class="mt-5 d-flex justify-center">
       <date-picker
         max="2020-04-12"
         min="2020-01-24"
         type="date"
+        color="green lighten-1"
         :value="state.date.toISOString()"
       />
     </div>

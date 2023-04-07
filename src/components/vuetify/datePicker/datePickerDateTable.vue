@@ -2,18 +2,18 @@
   <div class="v-date-picker-table v-date-picker-table--date">
     <table>
       <thead>
-        <th v-for="(d, i) in weekDays" :key="i">
-          <tr>
-            {{
-              d
-            }}
-          </tr>
-        </th>
+        <tr>
+          <th v-for="(d, i) in weekDays" :key="i">
+            {{ d }}
+          </th>
+        </tr>
       </thead>
       <tbody>
         <tr v-for="(r, i) in rows" :key="i">
           <td v-for="(d, j) in r" :key="j">
-            {{ d }}
+            <v-btn variant="text" icon v-if="d !== ''">
+              {{ d }}
+            </v-btn>
           </td>
         </tr>
       </tbody>
@@ -177,6 +177,7 @@ const rows = computed(() => {
 
   th
     font-size: $date-picker-table-font-size
+    color: rgba(0,0,0,.38)
 
   &--date .v-btn
     height: $date-picker-table-date-button-height

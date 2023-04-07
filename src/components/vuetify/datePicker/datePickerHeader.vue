@@ -1,18 +1,18 @@
 <template>
   <div class="v-date-picker-header" :class="classes">
-    <v-btn icon>
+    <v-btn icon variant="flat" density="compact">
       <v-icon> mdi-chevron-left </v-icon>
     </v-btn>
     <div class="v-date-picker-header__value">
       <transition
         :name="state.isReversing ? 'tab-reverse-transition' : 'tab-transition'"
       >
-        <button>
+        <v-btn variant="plain">
           {{ formatter!(value.toString()) }}
-        </button>
+        </v-btn>
       </transition>
     </div>
-    <v-btn icon>
+    <v-btn icon variant="flat" density="compact">
       <v-icon> mdi-chevron-right </v-icon>
     </v-btn>
   </div>
