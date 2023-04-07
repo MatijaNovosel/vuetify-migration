@@ -144,10 +144,6 @@ const rows = computed(() => {
     }
   }
 
-  console.log(nextMonthYear);
-  console.log(nextMonth);
-  console.log(nextMonthDay);
-
   while (row.length < cellsInRow) {
     const date = `${nextMonthYear}-${pad(nextMonth + 1)}-${pad(
       nextMonthDay++
