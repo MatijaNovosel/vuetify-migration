@@ -63,3 +63,7 @@ export function sanitizeDateString(
     { date: 10, month: 7, year: 4 }[type]
   );
 }
+
+export function createRange(length: number): number[] {
+  return Array.from({ length }, (v, k) => k);
+}
