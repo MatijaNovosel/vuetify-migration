@@ -121,19 +121,41 @@ const rows = computed(() => {
     0
   ).getDate();
   const cellsInRow = 7;
+  const nextMonthYear =
+    displayedMonth.value === 11 ? displayedYear.value + 1 : displayedYear.value;
+  const nextMonth = (displayedMonth.value + 1) % 12;
+  let nextMonthDay = 1;
 
-  for (day = 1; day <= daysInMonth; day++) {
+  while (day--) {
+    const date = `${prevMonthYear}-${pad(prevMonth + 1)}-${pad(
+      firstDayFromPreviousMonth - day
+    )}`;
+    row.push(props.showAdjacentMonths ? formatter.value!(date) : "");
+  }
+
+  for (let day = 1; day <= daysInMonth; day++) {
     const date = `${displayedYear.value}-${pad(displayedMonth.value + 1)}-${pad(
       day
     )}`;
-
     row.push(formatter.value!(date));
-
     if (row.length % cellsInRow === 0) {
       rows.push(row);
       row = [];
     }
   }
+
+  console.log(nextMonthYear);
+  console.log(nextMonth);
+  console.log(nextMonthDay);
+
+  while (row.length < cellsInRow) {
+    const date = `${nextMonthYear}-${pad(nextMonth + 1)}-${pad(
+      nextMonthDay++
+    )}`;
+    row.push(props.showAdjacentMonths ? formatter.value!(date) : "");
+  }
+
+  if (row.length) rows.push(row);
 
   return rows;
 });
