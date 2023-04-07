@@ -11,16 +11,20 @@
         </th>
       </thead>
       <tbody>
-        <tr></tr>
+        <tr v-for="(r, i) in rows" :key="i">
+          <td v-for="(d, j) in r" :key="j">
+            {{ d }}
+          </td>
+        </tr>
       </tbody>
     </table>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { createRange } from "@/utils/helpers";
+import { createRange, pad } from "@/utils/helpers";
 import { computed } from "vue";
-import { createNativeLocaleFormatter } from "./helpers";
+import { createNativeLocaleFormatter, weekNumber } from "./helpers";
 import { DatePickerAllowedDatesFunction, DatePickerFormatter } from "./models";
 
 const props = defineProps<{
@@ -74,6 +78,64 @@ const weekDays = computed(() => {
     : createRange(7).map(
         (i) => ["S", "M", "T", "W", "T", "F", "S"][(i + first) % 7]
       );
+});
+
+const displayedMonth = computed(
+  () => Number(props.tableDate.split("-")[1]) - 1
+);
+
+const displayedYear = computed(() => Number(props.tableDate.split("-")[0]));
+
+const weekDaysBeforeFirstDayOfTheMonth = () => {
+  const firstDayOfTheMonth = new Date(
+    `${displayedYear.value}-${pad(displayedMonth.value + 1)}-01T00:00:00+00:00`
+  );
+  const weekDay = firstDayOfTheMonth.getUTCDay();
+  return (weekDay - parseInt((props.firstDayOfWeek || 0).toString()) + 7) % 7;
+};
+
+const getWeekNumber = (dayInMonth: number) =>
+  weekNumber(
+    displayedYear.value,
+    displayedMonth.value,
+    dayInMonth,
+    parseInt((props.firstDayOfWeek || 0).toString()),
+    parseInt((props.localeFirstDayOfYear || 0).toString())
+  );
+
+const rows = computed(() => {
+  const rows: string[][] = [[]];
+  let row = [];
+  const daysInMonth = new Date(
+    displayedYear.value,
+    displayedMonth.value + 1
+  ).getDate();
+  let day = weekDaysBeforeFirstDayOfTheMonth();
+  const prevMonthYear = displayedMonth.value
+    ? displayedYear.value
+    : displayedYear.value - 1;
+  const prevMonth = (displayedMonth.value + 11) % 12;
+  const firstDayFromPreviousMonth = new Date(
+    displayedYear.value,
+    displayedMonth.value,
+    0
+  ).getDate();
+  const cellsInRow = props.showWeek ? 8 : 7;
+
+  for (day = 1; day <= daysInMonth; day++) {
+    const date = `${displayedYear.value}-${pad(displayedMonth.value + 1)}-${pad(
+      day
+    )}`;
+
+    row.push(date);
+
+    if (rows.length % cellsInRow === 0) {
+      rows.push(row);
+      row = [];
+    }
+  }
+
+  return rows;
 });
 </script>
 
