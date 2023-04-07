@@ -11,8 +11,17 @@
       <tbody>
         <tr v-for="(r, i) in rows" :key="i">
           <td v-for="(d, j) in r" :key="j">
-            <v-btn variant="text" icon v-if="d !== ''">
-              {{ d }}
+            <v-btn
+              class="v-date-picker-table__current"
+              :class="{
+                [`bg-${color || 'accent'}`]: isSelected(d),
+              }"
+              variant="text"
+              icon
+              @click="emit('input', d)"
+              v-if="d !== ''"
+            >
+              {{ formatter!(d) }}
             </v-btn>
           </td>
         </tr>
@@ -26,6 +35,8 @@ import { createRange, pad } from "@/utils/helpers";
 import { computed } from "vue";
 import { createNativeLocaleFormatter, weekNumber } from "./helpers";
 import { DatePickerAllowedDatesFunction, DatePickerFormatter } from "./models";
+
+const emit = defineEmits(["input"]);
 
 const props = defineProps<{
   showWeek?: boolean;
@@ -47,6 +58,7 @@ const props = defineProps<{
   tableDate: string;
   value?: string | string[];
   currentLocale?: string;
+  color?: string;
 }>();
 
 const formatter = computed(
@@ -102,6 +114,18 @@ const getWeekNumber = (dayInMonth: number) =>
     parseInt((props.localeFirstDayOfYear || 0).toString())
   );
 
+const isSelected = (value: string) => {
+  if (Array.isArray(props.value)) {
+    if (props.range && props.value.length === 2) {
+      const [from, to] = [...props.value].sort();
+      return from <= value && value <= to;
+    } else {
+      return props.value.indexOf(value) !== -1;
+    }
+  }
+  return value === props.value;
+};
+
 const rows = computed(() => {
   const rows: string[][] = [];
   let row = [];
@@ -126,29 +150,32 @@ const rows = computed(() => {
   const nextMonth = (displayedMonth.value + 1) % 12;
   let nextMonthDay = 1;
 
+  // Days before current month
   while (day--) {
     const date = `${prevMonthYear}-${pad(prevMonth + 1)}-${pad(
       firstDayFromPreviousMonth - day
     )}`;
-    row.push(props.showAdjacentMonths ? formatter.value!(date) : "");
+    row.push(props.showAdjacentMonths ? date : "");
   }
 
+  // Days in current month
   for (let day = 1; day <= daysInMonth; day++) {
     const date = `${displayedYear.value}-${pad(displayedMonth.value + 1)}-${pad(
       day
     )}`;
-    row.push(formatter.value!(date));
+    row.push(date);
     if (row.length % cellsInRow === 0) {
       rows.push(row);
       row = [];
     }
   }
 
+  // Days after current month
   while (row.length < cellsInRow) {
     const date = `${nextMonthYear}-${pad(nextMonth + 1)}-${pad(
       nextMonthDay++
     )}`;
-    row.push(props.showAdjacentMonths ? formatter.value!(date) : "");
+    row.push(props.showAdjacentMonths ? date : "");
   }
 
   if (row.length) rows.push(row);

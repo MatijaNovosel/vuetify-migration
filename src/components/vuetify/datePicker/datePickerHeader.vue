@@ -34,6 +34,7 @@ const props = defineProps<{
   prevIcon?: string;
   readonly?: boolean;
   currentLocale?: string;
+  color?: string;
   value: number | string;
 }>();
 

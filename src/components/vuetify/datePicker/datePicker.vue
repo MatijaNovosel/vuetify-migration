@@ -1,8 +1,13 @@
 <template>
   <div :style="styles">
     <date-picker-title :color="color" :year="2012" :date="displayDate" />
-    <date-picker-header :value="displayDate" />
-    <date-picker-date-table :table-date="displayDate" />
+    <date-picker-header :color="color" :value="displayDate" />
+    <date-picker-date-table
+      :value="value"
+      :color="color"
+      :table-date="displayDate"
+      @input="dateClick"
+    />
   </div>
 </template>
 

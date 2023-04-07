@@ -7,7 +7,8 @@
         min="2020-01-24"
         type="date"
         color="green lighten-1"
-        :value="state.date.toISOString()"
+        :value="state.date"
+        @input="dateChanged"
       />
     </div>
     <speed-dial bottom right fixed direction="left">
@@ -27,6 +28,10 @@ import speedDial from "@/components/vuetify/speedDial.vue";
 import { reactive } from "vue";
 
 const state = reactive({
-  date: new Date(),
+  date: new Date().toISOString().substring(0, 10),
 });
+
+const dateChanged = (val: string) => {
+  state.date = val;
+};
 </script>
