@@ -9,6 +9,7 @@
     <date-picker-header
       :color="color"
       :value="`${pad(tableYear, 4)}-${pad(tableMonth + 1)}`"
+      @input="(value: string) => state.tableDate = value"
     />
     <date-picker-date-table
       :value="value"
@@ -26,7 +27,7 @@ import {
   sanitizeDateString,
   wrapInArray,
 } from "@/utils/helpers";
-import { computed, onMounted, reactive, watch } from "vue";
+import { computed, onMounted, reactive } from "vue";
 import DatePickerDateTable from "./datePickerDateTable.vue";
 import DatePickerHeader from "./datePickerHeader.vue";
 import DatePickerTitle from "./datePickerTitle.vue";
@@ -308,16 +309,6 @@ const dateClick = (value: string) => {
   state.inputDay = parseInt(value.split("-")[2], 10);
   emitInput(inputDate.value);
 };
-
-watch(
-  () => state.tableDate,
-  (val) => {
-    console.log(val);
-  },
-  {
-    immediate: true,
-  }
-);
 
 onMounted(() => {
   if (props.pickerDate) return props.pickerDate;

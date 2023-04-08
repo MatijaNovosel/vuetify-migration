@@ -1,6 +1,11 @@
 <template>
   <div class="v-date-picker-header" :class="classes">
-    <v-btn icon variant="flat" density="compact">
+    <v-btn
+      icon
+      variant="flat"
+      density="compact"
+      @click="emit('input', calculateChange(-1))"
+    >
       <v-icon> mdi-chevron-left </v-icon>
     </v-btn>
     <div class="v-date-picker-header__value">
@@ -12,7 +17,12 @@
         </v-btn>
       </transition>
     </div>
-    <v-btn icon variant="flat" density="compact">
+    <v-btn
+      icon
+      variant="flat"
+      density="compact"
+      @click="emit('input', calculateChange(1))"
+    >
       <v-icon> mdi-chevron-right </v-icon>
     </v-btn>
   </div>
@@ -20,8 +30,10 @@
 
 <script lang="ts" setup>
 import { computed, reactive } from "vue";
-import { createNativeLocaleFormatter } from "./helpers";
+import { createNativeLocaleFormatter, monthChange } from "./helpers";
 import { DatePickerFormatter } from "./models";
+
+const emit = defineEmits(["input"]);
 
 const props = defineProps<{
   disabled?: boolean;
@@ -63,6 +75,15 @@ const formatter = computed(() => {
 const classes = computed(() => ({
   "v-date-picker-header--disabled": props.disabled,
 }));
+
+const calculateChange = (sign: number) => {
+  const [year, month] = String(props.value).split("-").map(Number);
+  if (month == null) {
+    return `${year + sign}`;
+  } else {
+    return monthChange(String(props.value), sign);
+  }
+};
 </script>
 
 <style lang="sass" scoped>

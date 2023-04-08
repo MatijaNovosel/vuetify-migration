@@ -18,12 +18,10 @@ export function createNativeLocaleFormatter(
 ): DatePickerFormatter | undefined {
   try {
     const intlFormatter = new Intl.DateTimeFormat(locale || undefined, options);
-    return (dateString: string) => {
-      console.log(dateString);
-      return intlFormatter.format(
+    return (dateString: string) =>
+      intlFormatter.format(
         new Date(`${makeIsoString(dateString)}T00:00:00+00:00`)
       );
-    };
   } catch (e) {
     return substrOptions.start || substrOptions.length
       ? (dateString: string) =>
@@ -138,3 +136,14 @@ export function weekNumber(
     return week;
   }
 }
+
+export const monthChange = (value: string, sign: number) => {
+  const [year, month] = value.split("-").map(Number);
+  if (month + sign === 0) {
+    return `${year - 1}-12`;
+  } else if (month + sign === 13) {
+    return `${year + 1}-01`;
+  } else {
+    return `${year}-${pad(month + sign)}`;
+  }
+};
