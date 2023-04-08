@@ -6,6 +6,7 @@
         max="2020-04-12"
         min="2020-01-24"
         type="date"
+        locale="en-us"
         color="green lighten-1"
         :value="state.date"
         @input="dateChanged"

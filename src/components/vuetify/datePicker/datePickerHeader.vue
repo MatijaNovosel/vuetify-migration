@@ -31,13 +31,11 @@
 <script lang="ts" setup>
 import { computed, reactive } from "vue";
 import { createNativeLocaleFormatter, monthChange } from "./helpers";
-import { DatePickerFormatter } from "./models";
 
 const emit = defineEmits(["input"]);
 
 const props = defineProps<{
   disabled?: boolean;
-  format?: DatePickerFormatter | undefined;
   min?: string;
   max?: string;
   nextAriaLabel?: string;
@@ -55,9 +53,7 @@ const state = reactive({
 });
 
 const formatter = computed(() => {
-  if (props.format) {
-    return props.format;
-  } else if (String(props.value).split("-")[1]) {
+  if (String(props.value).split("-")[1]) {
     return createNativeLocaleFormatter(
       props.currentLocale || "en-us",
       { month: "long", year: "numeric", timeZone: "UTC" },

@@ -39,6 +39,8 @@ import {
 import {
   ActivePicker,
   DatePickerAllowedDatesFunction,
+  DatePickerEventColors,
+  DatePickerEvents,
   DatePickerFormatter,
   DatePickerType,
   DatePickerValue,
@@ -54,25 +56,19 @@ const emit = defineEmits(["input", "change"]);
 
 const props = defineProps<{
   activePicker?: ActivePicker;
-  allowedDates?: DatePickerAllowedDatesFunction | undefined;
-  dayFormat?: DatePickerAllowedDatesFunction | undefined;
+  allowedDates?: DatePickerAllowedDatesFunction;
   disabled?: boolean;
-  events?: any[] | Function | Object;
-  eventColor?: any[] | Function | Object | string;
+  events?: DatePickerEvents;
+  eventColor?: DatePickerEventColors;
   firstDayOfWeek?: string | number;
   headerDateFormat?: DatePickerFormatter;
   localeFirstDayOfYear?: string | number;
   max: string;
   min: string;
-  monthFormat?: DatePickerFormatter | undefined;
   multiple?: boolean;
   nextIcon?: string;
-  nextMonthAriaLabel?: string;
-  nextYearAriaLabel?: string;
   pickerDate?: string;
   prevIcon?: string;
-  prevMonthAriaLabel?: string;
-  prevYearAriaLabel?: string;
   range?: boolean;
   reactive?: boolean;
   readonly?: boolean;
@@ -81,19 +77,12 @@ const props = defineProps<{
   selectedItemsText?: string;
   showAdjacentMonths?: boolean;
   showWeek?: boolean;
-  titleDateFormat?:
-    | DatePickerFormatter
-    | ((date: string[]) => string)
-    | undefined;
   type: DatePickerType;
   value: DatePickerValue;
-  weekdayFormat?: DatePickerFormatter | undefined;
-  yearFormat?: DatePickerFormatter | undefined;
   yearIcon?: string;
   locale?: string;
   flat?: boolean;
   fullWidth?: boolean;
-  headerColor?: string;
   landscape?: boolean;
   noTitle?: boolean;
   width?: number | string;
@@ -182,18 +171,14 @@ const maxYear = computed(() =>
 );
 
 const formatters = computed(() => ({
-  year:
-    props.yearFormat ||
-    createNativeLocaleFormatter(
-      props.locale,
-      { year: "numeric", timeZone: "UTC" },
-      { length: 4 }
-    ),
-  titleDate:
-    props.titleDateFormat ||
-    (isMultiple.value
-      ? defaultTitleMultipleDateFormatter.value
-      : defaultTitleDateFormatter.value),
+  year: createNativeLocaleFormatter(
+    props.locale,
+    { year: "numeric", timeZone: "UTC" },
+    { length: 4 }
+  ),
+  titleDate: isMultiple.value
+    ? defaultTitleMultipleDateFormatter.value
+    : defaultTitleDateFormatter.value,
 }));
 
 const defaultTitleMultipleDateFormatter = computed(() => (dates: string[]) => {
@@ -257,9 +242,6 @@ const checkMultipleProp = () => {
   }
 };
 
-const isDateAllowedFn = (value: string) =>
-  isDateAllowed(value, props.min, props.max, props.allowedDates);
-
 const yearClick = (value: number) => {
   state.inputYear = value;
   if (props.type === "month") {
@@ -272,7 +254,7 @@ const yearClick = (value: number) => {
     props.reactive &&
     !props.readonly &&
     !isMultiple.value &&
-    isDateAllowedFn(inputDate.value)
+    isDateAllowed(inputDate.value, props.min, props.max, props.allowedDates)
   ) {
     emit("input", inputDate.value);
   }
@@ -294,7 +276,7 @@ const monthClick = (value: string) => {
       props.reactive &&
       !props.readonly &&
       !isMultiple.value &&
-      isDateAllowedFn(inputDate.value)
+      isDateAllowed(inputDate.value, props.min, props.max, props.allowedDates)
     ) {
       emit("input", inputDate.value);
     }

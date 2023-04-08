@@ -9,9 +9,13 @@
     <div
       class="v-picker__title__btn v-date-picker-title__date v-picker__title__btn--active"
     >
-      <transition :class="computedTransition">
+      <transition
+        :name="
+          state.isReversing ? 'picker-reverse-transition' : 'picker-transition'
+        "
+      >
         <div>
-          {{ date || "&nbsp;" }}
+          {{ date }}
         </div>
       </transition>
     </div>
@@ -36,10 +40,6 @@ const state = reactive({
   isReversing: false,
 });
 
-const computedTransition = computed(() =>
-  state.isReversing ? "picker-reverse-transition" : "picker-transition"
-);
-
 const classes = computed(() => ({
   "v-date-picker-title--disabled": props.disabled,
   // TODO: Treba handlati druge načine predaje boja osim vuetify klasa, npr. hex
@@ -49,6 +49,7 @@ const classes = computed(() => ({
 
 <style lang="sass" scoped>
 @import './variables.scss'
+@import './transitions.scss'
 
 .v-date-picker-title
   display: flex
