@@ -228,7 +228,6 @@ const checkMultipleProp = () => {
 };
 
 const yearClick = (value: number) => {
-  console.log(value);
   state.inputYear = value;
   state.tableDate = `${value}-${pad((tableMonth.value || 0) + 1)}`;
   state.internalActivePicker = "MONTH";
