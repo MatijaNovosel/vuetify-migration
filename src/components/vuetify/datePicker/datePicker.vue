@@ -6,7 +6,7 @@
       :date="pickerTitle"
       :year="pad(tableYear, 4)"
       :selecting-year="state.internalActivePicker === 'YEAR'"
-      @select-year="(value: boolean) => state.internalActivePicker = value ? 'YEAR' : props.type.toUpperCase()"
+      @select-year="(value: boolean) => state.internalActivePicker = value ? 'YEAR' : 'DATE'"
     />
     <date-picker-header
       v-if="['DATE', 'MONTH'].includes(state.internalActivePicker)"
@@ -64,7 +64,6 @@ import {
   DatePickerAllowedDatesFunction,
   DatePickerEventColors,
   DatePickerEvents,
-  DatePickerType,
   DatePickerValue,
 } from "./models";
 
@@ -85,7 +84,6 @@ const props = defineProps<{
   showCurrent?: boolean | string;
   selectedItemsText?: string;
   showAdjacentMonths?: boolean;
-  type: DatePickerType;
   value: DatePickerValue;
   locale?: string;
   fullWidth?: boolean;
@@ -126,7 +124,7 @@ const lastValue = computed(() =>
 );
 
 const selectedMonths = computed(() => {
-  if (!props.value || props.type === "month") {
+  if (!props.value) {
     return props.value;
   } else if (isMultiple.value) {
     return multipleValue.value.map((val) => val.substring(0, 7));
@@ -135,20 +133,9 @@ const selectedMonths = computed(() => {
   }
 });
 
-const current = computed(() => {
-  if (props.showCurrent === true) {
-    return sanitizeDateString(
-      `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`,
-      props.type
-    );
-  }
-  return props.showCurrent || null;
-});
-
-const inputDate = computed(() =>
-  props.type === "date"
-    ? `${state.inputYear}-${pad(state.inputMonth! + 1)}-${pad(state.inputDay!)}`
-    : `${state.inputYear}-${pad(state.inputMonth! + 1)}`
+const inputDate = computed(
+  () =>
+    `${state.inputYear}-${pad(state.inputMonth! + 1)}-${pad(state.inputDay!)}`
 );
 
 const tableMonth = computed(
@@ -194,9 +181,9 @@ const defaultTitleMultipleDateFormatter = computed(() => (dates: string[]) => {
 });
 
 const defaultTitleDateFormatter = computed(() =>
-  createNativeLocaleFormatter(props.locale, titleFormats[props.type], {
+  createNativeLocaleFormatter(props.locale, titleFormats["date"], {
     start: 0,
-    length: { date: 10, month: 7, year: 4 }[props.type],
+    length: { date: 10, month: 7, year: 4 }["date"],
   })
 );
 
@@ -237,11 +224,7 @@ const checkMultipleProp = () => {
 
 const yearClick = (value: number) => {
   state.inputYear = value;
-  if (props.type === "month") {
-    state.tableDate = `${value}`;
-  } else {
-    state.tableDate = `${value}-${pad((tableMonth.value || 0) + 1)}`;
-  }
+  state.tableDate = `${value}-${pad((tableMonth.value || 0) + 1)}`;
   state.internalActivePicker = "MONTH";
   if (
     !props.readonly &&
@@ -255,24 +238,20 @@ const yearClick = (value: number) => {
 const monthClick = (value: string) => {
   state.inputYear = parseInt(value.split("-")[0], 10);
   state.inputMonth = parseInt(value.split("-")[1], 10) - 1;
-  if (props.type === "date") {
-    if (state.inputDay) {
-      state.inputDay = Math.min(
-        state.inputDay,
-        daysInMonth(state.inputYear, state.inputMonth + 1)
-      );
-    }
-    state.tableDate = value;
-    state.internalActivePicker = "DATE";
-    if (
-      !props.readonly &&
-      !isMultiple.value &&
-      isDateAllowed(inputDate.value, props.min, props.max, props.allowedDates)
-    ) {
-      emit("input", inputDate.value);
-    }
-  } else {
-    emitInput(inputDate.value);
+  if (state.inputDay) {
+    state.inputDay = Math.min(
+      state.inputDay,
+      daysInMonth(state.inputYear, state.inputMonth + 1)
+    );
+  }
+  state.tableDate = value;
+  state.internalActivePicker = "DATE";
+  if (
+    !props.readonly &&
+    !isMultiple.value &&
+    isDateAllowed(inputDate.value, props.min, props.max, props.allowedDates)
+  ) {
+    emit("input", inputDate.value);
   }
 };
 
@@ -288,7 +267,7 @@ const setInputDate = () => {
     const array = lastValue.value.split("-");
     state.inputYear = parseInt(array[0], 10);
     state.inputMonth = parseInt(array[1], 10) - 1;
-    if (props.type === "date") state.inputDay = parseInt(array[2], 10);
+    state.inputDay = parseInt(array[2], 10);
   } else {
     state.inputYear = state.inputYear || now.getFullYear();
     state.inputMonth =
@@ -309,25 +288,7 @@ watch(
         (!val || !val.length) &&
         !props.pickerDate)
     ) {
-      state.tableDate = sanitizeDateString(
-        inputDate.value,
-        props.type === "month" ? "year" : "month"
-      );
-    }
-  }
-);
-
-watch(
-  () => props.type,
-  (type) => {
-    state.internalActivePicker = type.toUpperCase();
-    if (props.value && props.value.length) {
-      const output = multipleValue.value
-        .map((val: string) => sanitizeDateString(val, type))
-        .filter((val) =>
-          isDateAllowed(val, props.min, props.max, props.allowedDates)
-        );
-      emit("input", isMultiple.value ? output : output[0]);
+      state.tableDate = sanitizeDateString(inputDate.value, "month");
     }
   }
 );
@@ -340,9 +301,6 @@ onMounted(() => {
     (typeof props.showCurrent === "string"
       ? props.showCurrent
       : `${now.getFullYear()}-${now.getMonth() + 1}`);
-  state.tableDate = sanitizeDateString(
-    date as string,
-    props.type === "date" ? "month" : "year"
-  );
+  state.tableDate = sanitizeDateString(date as string, "month");
 });
 </script>
