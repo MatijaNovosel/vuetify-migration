@@ -37,7 +37,12 @@
       @update:table-date="(value: string) => state.tableDate = value"
       @input="monthClick"
     />
-    <date-picker-years v-else />
+    <date-picker-years
+      @input="yearClick"
+      :value="tableYear"
+      :color="color"
+      v-else
+    />
   </div>
 </template>
 
@@ -223,6 +228,7 @@ const checkMultipleProp = () => {
 };
 
 const yearClick = (value: number) => {
+  console.log(value);
   state.inputYear = value;
   state.tableDate = `${value}-${pad((tableMonth.value || 0) + 1)}`;
   state.internalActivePicker = "MONTH";
