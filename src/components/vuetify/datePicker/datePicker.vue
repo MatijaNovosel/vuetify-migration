@@ -10,12 +10,25 @@
       :color="color"
       :value="`${pad(tableYear, 4)}-${pad(tableMonth + 1)}`"
       @input="(value: string) => state.tableDate = value"
+      @toggle="
+        state.internalActivePicker =
+          state.internalActivePicker === 'DATE' ? 'MONTH' : 'YEAR'
+      "
     />
     <date-picker-date-table
+      v-if="state.internalActivePicker === 'DATE'"
       :value="value"
       :color="color"
       :table-date="`${pad(tableYear, 4)}-${pad(tableMonth + 1)}`"
       @input="dateClick"
+    />
+    <date-picker-month-table
+      v-else-if="state.internalActivePicker === 'MONTH'"
+      :value="selectedMonths"
+      :color="color"
+      :table-date="pad(tableYear, 4)"
+      @update:table-date="(value: string) => state.tableDate = value"
+      @input="monthClick"
     />
   </div>
 </template>
@@ -30,6 +43,7 @@ import {
 import { computed, onMounted, reactive } from "vue";
 import DatePickerDateTable from "./datePickerDateTable.vue";
 import DatePickerHeader from "./datePickerHeader.vue";
+import DatePickerMonthTable from "./datePickerMonthTable.vue";
 import DatePickerTitle from "./datePickerTitle.vue";
 import {
   createNativeLocaleFormatter,
@@ -102,7 +116,7 @@ const pickerTitle = computed(() =>
 const now = new Date();
 
 const state = reactive({
-  internalActivePicker: "",
+  internalActivePicker: "DATE",
   inputDay: null as number | null,
   inputMonth: null as number | null,
   inputYear: null as number | null,

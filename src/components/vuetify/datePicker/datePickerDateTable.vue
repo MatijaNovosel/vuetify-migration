@@ -1,83 +1,70 @@
 <template>
-  <div class="v-date-picker-table v-date-picker-table--date">
-    <table>
-      <thead>
-        <tr>
-          <th v-for="(d, i) in weekDays" :key="i">
-            {{ d }}
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="(r, i) in rows" :key="i">
-          <td v-for="(d, j) in r" :key="j">
-            <v-btn
-              class="v-date-picker-table__current"
-              :class="{
-                [`bg-${color || 'accent'}`]: isSelected(d),
-              }"
-              variant="text"
-              icon
-              @click="emit('input', d)"
-              v-if="d !== ''"
-            >
-              {{ formatter!(d) }}
-            </v-btn>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+  <table class="v-date-picker-table v-date-picker-table--date">
+    <thead>
+      <tr>
+        <th v-for="(d, i) in weekDays" :key="i">
+          {{ d }}
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr v-for="(r, i) in rows" :key="i">
+        <td v-for="(d, j) in r" :key="j">
+          <v-btn
+            class="v-date-picker-table__current"
+            :class="{
+              [`bg-${color || 'accent'}`]: isSelected(d),
+            }"
+            variant="text"
+            icon
+            @click="emit('input', d)"
+            v-if="d !== ''"
+          >
+            {{ formatter!(d) }}
+          </v-btn>
+        </td>
+      </tr>
+    </tbody>
+  </table>
 </template>
 
 <script lang="ts" setup>
 import { createRange, pad } from "@/utils/helpers";
 import { computed } from "vue";
-import { createNativeLocaleFormatter, weekNumber } from "./helpers";
-import { DatePickerAllowedDatesFunction, DatePickerFormatter } from "./models";
+import { createNativeLocaleFormatter } from "./helpers";
+import { DatePickerAllowedDatesFunction } from "./models";
 
 const emit = defineEmits(["input"]);
 
 const props = defineProps<{
-  showWeek?: boolean;
   localeFirstDayOfYear?: string | number;
   firstDayOfWeek?: string | number;
   showAdjacentMonths?: boolean;
-  weekdayFormat?: DatePickerFormatter | undefined;
   allowedDates?: DatePickerAllowedDatesFunction;
-  current?: string;
   disabled?: boolean;
-  format?: DatePickerFormatter;
   events?: any[] | Function | Object;
   eventColor?: any[] | Function | Object | string;
-  min?: string;
-  max?: string;
   range?: boolean;
   readonly?: boolean;
-  scrollable?: boolean;
   tableDate: string;
   value?: string | string[];
   currentLocale?: string;
   color?: string;
 }>();
 
-const formatter = computed(
-  () =>
-    props.format ||
-    createNativeLocaleFormatter(
-      props.currentLocale,
-      { day: "numeric", timeZone: "UTC" },
-      { start: 8, length: 2 }
-    )
+const formatter = computed(() =>
+  createNativeLocaleFormatter(
+    props.currentLocale,
+    { day: "numeric", timeZone: "UTC" },
+    { start: 8, length: 2 }
+  )
 );
 
-const weekdayFormatter = computed(
-  () =>
-    props.weekdayFormat ||
-    createNativeLocaleFormatter(props.currentLocale, {
-      weekday: "narrow",
-      timeZone: "UTC",
-    })
+const weekdayFormatter = computed(() =>
+  createNativeLocaleFormatter(props.currentLocale, {
+    weekday: "narrow",
+    timeZone: "UTC",
+  })
 );
 
 const weekDays = computed(() => {
@@ -104,15 +91,6 @@ const weekDaysBeforeFirstDayOfTheMonth = () => {
   const weekDay = firstDayOfTheMonth.getUTCDay();
   return (weekDay - parseInt((props.firstDayOfWeek || 0).toString()) + 7) % 7;
 };
-
-const getWeekNumber = (dayInMonth: number) =>
-  weekNumber(
-    displayedYear.value,
-    displayedMonth.value,
-    dayInMonth,
-    parseInt((props.firstDayOfWeek || 0).toString()),
-    parseInt((props.localeFirstDayOfYear || 0).toString())
-  );
 
 const isSelected = (value: string) => {
   if (Array.isArray(props.value)) {

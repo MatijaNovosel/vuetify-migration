@@ -12,7 +12,7 @@
       <transition
         :name="state.isReversing ? 'tab-reverse-transition' : 'tab-transition'"
       >
-        <v-btn variant="plain">
+        <v-btn variant="plain" @click="emit('toggle')">
           {{ formatter!(value.toString()) }}
         </v-btn>
       </transition>
@@ -32,7 +32,7 @@
 import { computed, reactive } from "vue";
 import { createNativeLocaleFormatter, monthChange } from "./helpers";
 
-const emit = defineEmits(["input"]);
+const emit = defineEmits(["input", "toggle"]);
 
 const props = defineProps<{
   disabled?: boolean;
@@ -74,16 +74,14 @@ const classes = computed(() => ({
 
 const calculateChange = (sign: number) => {
   const [year, month] = String(props.value).split("-").map(Number);
-  if (month == null) {
-    return `${year + sign}`;
-  } else {
-    return monthChange(String(props.value), sign);
-  }
+  if (month == null) return `${year + sign}`;
+  else return monthChange(String(props.value), sign);
 };
 </script>
 
 <style lang="sass" scoped>
 @import "./variables.scss"
+@import "./transitions.scss"
 
 .v-date-picker-header
   padding: $date-picker-header-padding
