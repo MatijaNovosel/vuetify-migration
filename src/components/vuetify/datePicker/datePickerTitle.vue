@@ -1,13 +1,19 @@
 <template>
   <div class="v-date-picker-title v-picker__title" :class="classes">
-    <div class="v-picker__title__btn v-date-picker-title__year">
+    <div
+      :class="titleClasses"
+      class="v-picker__title__btn v-date-picker-title__year"
+      @click="emit('select-year', true)"
+    >
       {{ year }}
       <v-icon v-if="yearIcon">
         {{ yearIcon }}
       </v-icon>
     </div>
     <div
-      class="v-picker__title__btn v-date-picker-title__date v-picker__title__btn--active"
+      :class="titleDateClasses"
+      class="v-picker__title__btn v-date-picker-title__date"
+      @click="emit('select-year', false)"
     >
       <transition
         :name="
@@ -25,6 +31,8 @@
 <script lang="ts" setup>
 import { computed, reactive } from "vue";
 
+const emit = defineEmits(["select-year"]);
+
 const props = defineProps<{
   date?: string;
   disabled?: boolean;
@@ -41,9 +49,18 @@ const state = reactive({
 });
 
 const classes = computed(() => ({
-  "v-date-picker-title--disabled": props.disabled,
   // TODO: Treba handlati druge načine predaje boja osim vuetify klasa, npr. hex
   [`bg-${props.color}` || "bg-accent"]: true,
+}));
+
+const titleClasses = computed(() => ({
+  "v-picker__title__btn--active": props.selectingYear,
+  "v-picker__title__btn--readonly": props.readonly,
+}));
+
+const titleDateClasses = computed(() => ({
+  "v-picker__title__btn--active": !props.selectingYear,
+  "v-picker__title__btn--readonly": props.readonly,
 }));
 </script>
 

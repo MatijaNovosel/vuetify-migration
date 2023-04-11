@@ -5,10 +5,17 @@
       :color="color"
       :date="pickerTitle"
       :year="pad(tableYear, 4)"
+      :selecting-year="state.internalActivePicker === 'YEAR'"
+      @select-year="(value: boolean) => state.internalActivePicker = value ? 'YEAR' : props.type.toUpperCase()"
     />
     <date-picker-header
+      v-if="['DATE', 'MONTH'].includes(state.internalActivePicker)"
       :color="color"
-      :value="`${pad(tableYear, 4)}-${pad(tableMonth + 1)}`"
+      :value="
+        state.internalActivePicker === 'DATE'
+          ? `${pad(tableYear, 4)}-${pad(tableMonth + 1)}`
+          : `${pad(tableYear, 4)}`
+      "
       @input="(value: string) => state.tableDate = value"
       @toggle="
         state.internalActivePicker =
@@ -30,6 +37,7 @@
       @update:table-date="(value: string) => state.tableDate = value"
       @input="monthClick"
     />
+    <date-picker-years v-else />
   </div>
 </template>
 
@@ -40,11 +48,12 @@ import {
   sanitizeDateString,
   wrapInArray,
 } from "@/utils/helpers";
-import { computed, onMounted, reactive } from "vue";
+import { computed, onMounted, reactive, watch } from "vue";
 import DatePickerDateTable from "./datePickerDateTable.vue";
 import DatePickerHeader from "./datePickerHeader.vue";
 import DatePickerMonthTable from "./datePickerMonthTable.vue";
 import DatePickerTitle from "./datePickerTitle.vue";
+import DatePickerYears from "./datePickerYears.vue";
 import {
   createNativeLocaleFormatter,
   daysInMonth,
@@ -202,24 +211,12 @@ const defaultTitleMultipleDateFormatter = computed(() => (dates: string[]) => {
   // this.$vuetify.lang.t(props.selectedItemsText, dates.length);
 });
 
-const defaultTitleDateFormatter = computed(() => {
-  const titleDateFormatter = createNativeLocaleFormatter(
-    props.locale,
-    titleFormats[props.type],
-    {
-      start: 0,
-      length: { date: 10, month: 7, year: 4 }[props.type],
-    }
-  );
-  const landscapeFormatter = (date: string) =>
-    titleDateFormatter!(date)
-      .replace(
-        /([^\d\s])([\d])/g,
-        (match, nonDigit, digit) => `${nonDigit} ${digit}`
-      )
-      .replace(", ", ",<br>");
-  return props.landscape ? landscapeFormatter : titleDateFormatter;
-});
+const defaultTitleDateFormatter = computed(() =>
+  createNativeLocaleFormatter(props.locale, titleFormats[props.type], {
+    start: 0,
+    length: { date: 10, month: 7, year: 4 }[props.type],
+  })
+);
 
 const emitInput = (newInput: string) => {
   if (props.range) {
@@ -305,6 +302,55 @@ const dateClick = (value: string) => {
   state.inputDay = parseInt(value.split("-")[2], 10);
   emitInput(inputDate.value);
 };
+
+const setInputDate = () => {
+  if (lastValue.value) {
+    const array = lastValue.value.split("-");
+    state.inputYear = parseInt(array[0], 10);
+    state.inputMonth = parseInt(array[1], 10) - 1;
+    if (props.type === "date") state.inputDay = parseInt(array[2], 10);
+  } else {
+    state.inputYear = state.inputYear || now.getFullYear();
+    state.inputMonth =
+      state.inputMonth == null ? state.inputMonth : now.getMonth();
+    state.inputDay = state.inputDay || now.getDate();
+  }
+};
+
+watch(
+  () => props.value,
+  (val) => {
+    checkMultipleProp();
+    setInputDate();
+    if (
+      (!isMultiple.value && props.value && !props.pickerDate) ||
+      (isMultiple.value &&
+        multipleValue.value.length &&
+        (!val || !val.length) &&
+        !props.pickerDate)
+    ) {
+      state.tableDate = sanitizeDateString(
+        inputDate.value,
+        props.type === "month" ? "year" : "month"
+      );
+    }
+  }
+);
+
+watch(
+  () => props.type,
+  (type) => {
+    state.internalActivePicker = type.toUpperCase();
+    if (props.value && props.value.length) {
+      const output = multipleValue.value
+        .map((val: string) => sanitizeDateString(val, type))
+        .filter((val) =>
+          isDateAllowed(val, props.min, props.max, props.allowedDates)
+        );
+      emit("input", isMultiple.value ? output : output[0]);
+    }
+  }
+);
 
 onMounted(() => {
   if (props.pickerDate) return props.pickerDate;
