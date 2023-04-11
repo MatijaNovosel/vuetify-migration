@@ -5,6 +5,7 @@
         <td v-for="(d, j) in r" :key="j">
           <v-btn
             variant="text"
+            @click="emit('input', d)"
             :class="{
               [`bg-${color || 'accent'}`]: isSelected(d),
             }"
@@ -21,6 +22,8 @@
 import { pad } from "@/utils/helpers";
 import { computed } from "vue";
 import { createNativeLocaleFormatter } from "./helpers";
+
+const emit = defineEmits(["input"]);
 
 const props = defineProps<{
   disabled?: boolean;

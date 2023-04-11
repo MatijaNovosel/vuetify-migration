@@ -49,6 +49,7 @@ import {
   wrapInArray,
 } from "@/utils/helpers";
 import { computed, onMounted, reactive, watch } from "vue";
+import { titleFormats } from "./constants";
 import DatePickerDateTable from "./datePickerDateTable.vue";
 import DatePickerHeader from "./datePickerHeader.vue";
 import DatePickerMonthTable from "./datePickerMonthTable.vue";
@@ -60,53 +61,34 @@ import {
   isDateAllowed,
 } from "./helpers";
 import {
-  ActivePicker,
   DatePickerAllowedDatesFunction,
   DatePickerEventColors,
   DatePickerEvents,
-  DatePickerFormatter,
   DatePickerType,
   DatePickerValue,
 } from "./models";
 
-const titleFormats: Record<string, Intl.DateTimeFormatOptions> = {
-  year: { year: "numeric", timeZone: "UTC" },
-  month: { month: "long", timeZone: "UTC" },
-  date: { weekday: "short", month: "short", day: "numeric", timeZone: "UTC" },
-};
-
 const emit = defineEmits(["input", "change"]);
 
 const props = defineProps<{
-  activePicker?: ActivePicker;
   allowedDates?: DatePickerAllowedDatesFunction;
   disabled?: boolean;
   events?: DatePickerEvents;
   eventColor?: DatePickerEventColors;
   firstDayOfWeek?: string | number;
-  headerDateFormat?: DatePickerFormatter;
-  localeFirstDayOfYear?: string | number;
   max: string;
   min: string;
   multiple?: boolean;
-  nextIcon?: string;
   pickerDate?: string;
-  prevIcon?: string;
   range?: boolean;
-  reactive?: boolean;
   readonly?: boolean;
-  scrollable?: boolean;
   showCurrent?: boolean | string;
   selectedItemsText?: string;
   showAdjacentMonths?: boolean;
-  showWeek?: boolean;
   type: DatePickerType;
   value: DatePickerValue;
-  yearIcon?: string;
   locale?: string;
-  flat?: boolean;
   fullWidth?: boolean;
-  landscape?: boolean;
   noTitle?: boolean;
   width?: number | string;
   color?: string;
@@ -262,7 +244,6 @@ const yearClick = (value: number) => {
   }
   state.internalActivePicker = "MONTH";
   if (
-    props.reactive &&
     !props.readonly &&
     !isMultiple.value &&
     isDateAllowed(inputDate.value, props.min, props.max, props.allowedDates)
@@ -284,7 +265,6 @@ const monthClick = (value: string) => {
     state.tableDate = value;
     state.internalActivePicker = "DATE";
     if (
-      props.reactive &&
       !props.readonly &&
       !isMultiple.value &&
       isDateAllowed(inputDate.value, props.min, props.max, props.allowedDates)
