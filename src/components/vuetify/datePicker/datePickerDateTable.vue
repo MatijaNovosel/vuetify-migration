@@ -196,19 +196,6 @@ const rows = computed(() => {
     &.v-btn--active
       color: $date-picker-table-active-date-color
 
-.v-date-picker-table--month
-  td
-    width: 33.333333%
-    height: $date-picker-table-month-height
-    vertical-align: middle
-    text-align: center
-
-    .v-btn
-      margin: 0 auto
-      max-width: $date-picker-table-month-max-width
-      min-width: $date-picker-table-month-min-width
-      width: 100%
-
 .v-date-picker-table--date
   th
     padding: $date-picker-table-date-padding
