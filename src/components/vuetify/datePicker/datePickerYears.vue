@@ -88,9 +88,4 @@ const years = computed(() => {
 
     &:hover
       background: $date-picker-years-item-hover-background
-
-.v-picker--landscape
-  .v-date-picker-years
-    padding: 0
-    height: $date-picker-years-landscape-height
 </style>
