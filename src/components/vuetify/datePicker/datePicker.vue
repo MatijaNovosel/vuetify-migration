@@ -34,7 +34,6 @@
       :value="selectedMonths"
       :color="color"
       :table-date="pad(tableYear, 4)"
-      @update:table-date="(value: string) => state.tableDate = value"
       @input="monthClick"
     />
     <date-picker-years

@@ -9,13 +9,9 @@
       <v-icon> mdi-chevron-left </v-icon>
     </v-btn>
     <div class="v-date-picker-header__value">
-      <transition
-        :name="state.isReversing ? 'tab-reverse-transition' : 'tab-transition'"
-      >
-        <v-btn variant="plain" @click="emit('toggle')">
-          {{ formatter!(value.toString()) }}
-        </v-btn>
-      </transition>
+      <v-btn variant="plain" @click="emit('toggle')">
+        {{ formatter!(value.toString()) }}
+      </v-btn>
     </div>
     <v-btn
       icon
@@ -29,7 +25,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, reactive } from "vue";
+import { computed } from "vue";
 import { createNativeLocaleFormatter, monthChange } from "./helpers";
 
 const emit = defineEmits(["input", "toggle"]);
@@ -47,10 +43,6 @@ const props = defineProps<{
   color?: string;
   value: number | string;
 }>();
-
-const state = reactive({
-  isReversing: false,
-});
 
 const formatter = computed(() => {
   if (String(props.value).split("-")[1]) {
@@ -81,7 +73,6 @@ const calculateChange = (sign: number) => {
 
 <style lang="sass" scoped>
 @import "./variables.scss"
-@import "./transitions.scss"
 
 .v-date-picker-header
   padding: $date-picker-header-padding

@@ -1,5 +1,5 @@
 <template>
-  <ul class="v-date-picker-years">
+  <ul class="v-date-picker-years" ref="yearList">
     <li
       :class="{
         active: parseInt(value.toString(), 10) === year,
@@ -17,10 +17,11 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { createNativeLocaleFormatter } from "./helpers";
 
 const emit = defineEmits(["input"]);
+const yearList = ref<HTMLElement | null>(null);
 
 const props = defineProps<{
   disabled?: boolean;
@@ -29,16 +30,12 @@ const props = defineProps<{
   range?: boolean;
   currentLocale?: string;
   color?: string;
-  min?: number | string;
-  max?: number | string;
 }>();
 
-const formatter = computed(() =>
-  createNativeLocaleFormatter(
-    props.currentLocale,
-    { year: "numeric", timeZone: "UTC" },
-    { length: 4 }
-  )
+const formatter = createNativeLocaleFormatter(
+  props.currentLocale,
+  { year: "numeric", timeZone: "UTC" },
+  { length: 4 }
 );
 
 const years = computed(() => {
@@ -46,19 +43,26 @@ const years = computed(() => {
   const selectedYear = props.value
     ? parseInt(props.value.toString(), 10)
     : new Date().getFullYear();
-  const maxYear = props.max
-    ? parseInt(props.max.toString(), 10)
-    : selectedYear + 100;
-  const minYear = Math.min(
-    maxYear,
-    props.min ? parseInt(props.min.toString(), 10) : selectedYear - 100
-  );
+  const maxYear = selectedYear + 100;
+  const minYear = Math.min(maxYear, selectedYear - 100);
 
   for (let year = maxYear; year >= minYear; year--) {
     children.push(year);
   }
 
   return children;
+});
+
+onMounted(() => {
+  setTimeout(() => {
+    const activeItem = document.getElementsByClassName(
+      "active"
+    )[0] as HTMLElement;
+    yearList.value!.scrollTop =
+      activeItem.offsetTop -
+      yearList.value!.offsetHeight / 2 +
+      activeItem.offsetHeight / 2;
+  }, 200);
 });
 </script>
 

@@ -1,5 +1,5 @@
 <template>
-  <table class="v-date-picker-table v-date-picker-table--date">
+  <table :key="tableDate" class="v-date-picker-table v-date-picker-table--date">
     <thead>
       <tr>
         <th v-for="(d, i) in weekDays" :key="i">
@@ -52,27 +52,21 @@ const props = defineProps<{
   color?: string;
 }>();
 
-const formatter = computed(() =>
-  createNativeLocaleFormatter(
-    props.currentLocale,
-    { day: "numeric", timeZone: "UTC" },
-    { start: 8, length: 2 }
-  )
+const formatter = createNativeLocaleFormatter(
+  props.currentLocale,
+  { day: "numeric", timeZone: "UTC" },
+  { start: 8, length: 2 }
 );
 
-const weekdayFormatter = computed(() =>
-  createNativeLocaleFormatter(props.currentLocale, {
-    weekday: "narrow",
-    timeZone: "UTC",
-  })
-);
+const weekdayFormatter = createNativeLocaleFormatter(props.currentLocale, {
+  weekday: "narrow",
+  timeZone: "UTC",
+});
 
 const weekDays = computed(() => {
   const first = parseInt((props.firstDayOfWeek || 0).toString(), 10);
-  return weekdayFormatter.value
-    ? createRange(7).map((i) =>
-        weekdayFormatter.value!(`2017-01-${first + i + 15}`)
-      ) // 2017-01-15 is Sunday
+  return weekdayFormatter
+    ? createRange(7).map((i) => weekdayFormatter!(`2017-01-${first + i + 15}`)) // 2017-01-15 is Sunday
     : createRange(7).map(
         (i) => ["S", "M", "T", "W", "T", "F", "S"][(i + first) % 7]
       );

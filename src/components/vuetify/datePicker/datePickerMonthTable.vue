@@ -35,12 +35,10 @@ const props = defineProps<{
   color?: string;
 }>();
 
-const formatter = computed(() =>
-  createNativeLocaleFormatter(
-    props.currentLocale,
-    { month: "short", timeZone: "UTC" },
-    { start: 5, length: 2 }
-  )
+const formatter = createNativeLocaleFormatter(
+  props.currentLocale,
+  { month: "short", timeZone: "UTC" },
+  { start: 5, length: 2 }
 );
 
 const displayedYear = computed(() => Number(props.tableDate.split("-")[0]));
