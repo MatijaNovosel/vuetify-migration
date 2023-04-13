@@ -10,7 +10,7 @@
       :step="state.selecting === SelectingTimes.Hour ? 1 : 5"
       :double="state.selecting === SelectingTimes.Hour"
       :min="0"
-      :max="59"
+      :max="state.selecting === SelectingTimes.Hour ? 23 : 59"
       :value="
         state.selecting === SelectingTimes.Hour
           ? state.inputHour

@@ -25,7 +25,7 @@
             :style="getTransform(v)"
           >
             <span>
-              {{ v }}
+              {{ pad(v, 2) }}
             </span>
           </span>
         </div>
@@ -35,6 +35,7 @@
 </template>
 
 <script lang="ts" setup>
+import { pad } from "@/utils/helpers";
 import { computed, reactive, watch } from "vue";
 
 const props = defineProps<{
@@ -145,7 +146,7 @@ watch(
   padding-top: 100%
   flex: 1 0 auto
 
-  .v-time-picker-clock__item--disabled
+  &__item--disabled
     color: pink
 
     &.v-time-picker-clock__item--active
@@ -153,13 +154,13 @@ watch(
 
   &--indeterminate
     .v-time-picker-clock__hand
-      background-color: green
+      background-color: #bdbdbd
 
     &:after
       color: yellow
 
     .v-time-picker-clock__item--active
-      background-color: red
+      background-color: #bdbdbd
 
   &__container
     display: flex
