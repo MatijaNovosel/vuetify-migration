@@ -36,8 +36,6 @@ enum SelectingTimes {
   Second = 3,
 }
 
-const selectingNames = { 1: "hour", 2: "minute", 3: "second" };
-
 const emit = defineEmits([
   "input",
   "change",
