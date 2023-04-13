@@ -1,16 +1,16 @@
 <template>
-  <div class="v-time-picker-title">
+  <div class="v-time-picker-title v-picker__title" :class="classes">
     <div class="v-time-picker-title__time">
-      <v-btn>
+      <v-btn variant="text">
         {{ hour == null ? "--" : pad(hour) }}
       </v-btn>
       <span> : </span>
-      <v-btn>
+      <v-btn variant="text">
         {{ minute == null ? "--" : pad(minute) }}
       </v-btn>
       <template v-if="useSeconds">
         <span> : </span>
-        <v-btn>
+        <v-btn variant="text">
           {{ second == null ? "--" : pad(second) }}
         </v-btn>
       </template>
@@ -20,6 +20,7 @@
 
 <script lang="ts" setup>
 import { pad } from "@/utils/helpers";
+import { computed } from "vue";
 
 const props = defineProps<{
   disabled?: boolean;
@@ -28,7 +29,13 @@ const props = defineProps<{
   second?: number | null;
   readonly?: boolean;
   useSeconds?: boolean;
+  color?: string;
 }>();
+
+const classes = computed(() => ({
+  // TODO: Treba handlati druge načine predaje boja osim vuetify klasa, npr. hex
+  [`bg-${props.color}` || "bg-accent"]: true,
+}));
 </script>
 
 <style scoped lang="sass">

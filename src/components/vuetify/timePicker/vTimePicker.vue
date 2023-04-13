@@ -1,16 +1,31 @@
 <template>
-  <div>
+  <div :style="styles">
     <time-picker-title
+      color="green"
       :hour="state.inputHour"
       :minute="state.inputMinute"
       :second="state.inputSecond"
+    />
+    <time-picker-clock
+      :step="state.selecting === SelectingTimes.Hour ? 1 : 5"
+      :double="state.selecting === SelectingTimes.Hour"
+      :min="0"
+      :max="59"
+      :value="
+        state.selecting === SelectingTimes.Hour
+          ? state.inputHour
+          : state.selecting === SelectingTimes.Minute
+          ? state.inputMinute
+          : state.inputSecond
+      "
     />
   </div>
 </template>
 
 <script lang="ts" setup>
-import { createRange } from "@/utils/helpers";
-import { onMounted, reactive } from "vue";
+import { convertToUnit } from "@/utils/helpers";
+import { computed, onMounted, reactive } from "vue";
+import timePickerClock from "./timePickerClock.vue";
 import timePickerTitle from "./timePickerTitle.vue";
 
 enum SelectingTimes {
@@ -19,19 +34,17 @@ enum SelectingTimes {
   Second = 3,
 }
 
-const rangeHours24 = createRange(24);
-const range60 = createRange(60);
-const selectingNames = { 1: "hour", 2: "minute", 3: "second" };
-
 const props = defineProps<{
   disabled?: boolean;
   min?: string;
   max?: string;
   readonly?: boolean;
+  fullWidth?: boolean;
   scrollable?: boolean;
   useSeconds?: boolean;
   color?: string;
   value: any;
+  width?: number | string;
 }>();
 
 const state = reactive({
@@ -55,6 +68,10 @@ const setInputData = (value: string | null | Date) => {
     state.inputSecond = value.getSeconds();
   }
 };
+
+const styles = computed(() => ({
+  width: props.fullWidth ? undefined : convertToUnit(props.width || 290),
+}));
 
 onMounted(() => {
   setInputData(props.value);
