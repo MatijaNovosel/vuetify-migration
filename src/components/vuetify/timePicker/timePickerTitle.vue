@@ -1,19 +1,21 @@
 <template>
-  <div class="v-time-picker-title v-picker__title" :class="classes">
-    <div class="v-time-picker-title__time">
-      <v-btn variant="text">
-        {{ hour == null ? "--" : pad(hour) }}
-      </v-btn>
-      <span> : </span>
-      <v-btn variant="text">
-        {{ minute == null ? "--" : pad(minute) }}
-      </v-btn>
-      <template v-if="useSeconds">
+  <div class="v-picker__title" :class="classes">
+    <div class="v-time-picker-title">
+      <div class="v-time-picker-title__time">
+        <div class="v-picker__title__btn">
+          {{ hour == null ? "--" : pad(hour) }}
+        </div>
         <span> : </span>
-        <v-btn variant="text">
-          {{ second == null ? "--" : pad(second) }}
-        </v-btn>
-      </template>
+        <div class="v-picker__title__btn">
+          {{ minute == null ? "--" : pad(minute) }}
+        </div>
+        <template v-if="useSeconds">
+          <span> : </span>
+          <div class="v-picker__title__btn">
+            {{ second == null ? "--" : pad(second) }}
+          </div>
+        </template>
+      </div>
     </div>
   </div>
 </template>
@@ -41,6 +43,31 @@ const classes = computed(() => ({
 <style scoped lang="sass">
 @import "./variables.scss"
 
+.v-picker
+  border-radius: $picker-border-radius
+  contain: layout style
+  display: inline-flex
+  flex-direction: column
+  font-size: $picker-font-size
+  vertical-align: top
+  position: relative
+
+  &__title
+    color: white
+    border-top-left-radius: $picker-border-radius
+    border-top-right-radius: $picker-border-radius
+    padding: $picker-title-padding
+
+    &__btn
+      transition: 0.3s cubic-bezier(0.25, 0.8, 0.5, 1)
+
+      &:not(.v-picker__title__btn--active)
+        opacity: $picker-inactive-btn-opacity
+        cursor: pointer
+
+        &:hover:not(:focus)
+          opacity: 1
+
 .v-time-picker-title
   color: $time-picker-title-color
   display: flex
@@ -59,40 +86,7 @@ const classes = computed(() => ({
     font-size: $time-picker-title-btn-height
     justify-content: center
 
-.v-time-picker-title__ampm
-  align-self: flex-end
-  display: flex
-  flex-direction: column
-  font-size: $time-picker-ampm-title-font-size
-  text-transform: uppercase
-
-  div:only-child
-    flex-direction: row
-
-  &--readonly
-    .v-picker__title__btn.v-picker__title__btn--active
-      opacity: $picker-inactive-btn-opacity
-
-.v-picker__title--landscape
-  .v-time-picker-title
-    flex-direction: column
-    justify-content: center
-    height: 100%
-
-  .v-time-picker-title__time
-    text-align: right
-
-    .v-picker__title__btn,
-    span
-      height: $time-picker-landscape-title-btn-height
-      font-size: $time-picker-landscape-title-btn-height
-
-  .v-time-picker-title__ampm
-    margin: $time-picker-landscape-ampm-title-margin
-    align-self: initial
-    text-align: center
-
-.v-picker--time .v-picker__title--landscape
+.v-picker--time
   padding: 0
 
   .v-time-picker-title__time

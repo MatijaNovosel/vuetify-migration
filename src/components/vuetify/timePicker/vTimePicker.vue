@@ -1,5 +1,5 @@
 <template>
-  <div :style="styles">
+  <div class="v-picker v-picker--time" :style="styles">
     <time-picker-title
       color="green"
       :hour="state.inputHour"

@@ -1,7 +1,7 @@
 <template>
   <div class="d-flex flex-column justify-center items-center h-100 text-center">
     <span> Welcome to the home page </span>
-    <div class="mt-5 d-flex justify-center flex-column align-center">
+    <div class="mt-5 d-flex justify-center">
       <v-date-picker
         max="2020-04-12"
         min="2020-01-24"
@@ -10,7 +10,7 @@
         :value="state.date"
         @input="dateChanged"
       />
-      <v-time-picker :value="state.time" />
+      <v-time-picker class="ml-5" :value="state.time" />
     </div>
     <speed-dial bottom right fixed direction="left">
       <template #activator="{ activate }">

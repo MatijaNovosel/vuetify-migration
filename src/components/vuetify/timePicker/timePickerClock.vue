@@ -1,27 +1,29 @@
 <template>
-  <div class="v-time-picker-clock__container">
-    <div class="v-time-picker-clock">
-      <div class="v-time-picker-clock__inner">
-        <div
-          class="v-time-picker-clock__hand"
-          :style="clockHandStyle"
-          :class="{
-            'v-time-picker-clock__hand--inner': isInner(value),
-          }"
-        />
-        <span
-          v-for="v in values"
-          :key="v"
-          class="v-time-picker-clock__item"
-          :class="{
-            'v-time-picker-clock__item--active': value === displayedValue,
-          }"
-          :style="getTransform(v)"
-        >
-          <span>
-            {{ v }}
+  <div class="v-picker__body">
+    <div class="v-time-picker-clock__container">
+      <div class="v-time-picker-clock bg-grey-lighten-3">
+        <div class="v-time-picker-clock__inner">
+          <div
+            class="v-time-picker-clock__hand"
+            :style="clockHandStyle"
+            :class="{
+              'v-time-picker-clock__hand--inner': isInner(value),
+            }"
+          />
+          <span
+            v-for="v in values"
+            :key="v"
+            class="v-time-picker-clock__item"
+            :class="{
+              'v-time-picker-clock__item--active': value === displayedValue,
+            }"
+            :style="getTransform(v)"
+          >
+            <span>
+              {{ v }}
+            </span>
           </span>
-        </span>
+        </div>
       </div>
     </div>
   </div>
