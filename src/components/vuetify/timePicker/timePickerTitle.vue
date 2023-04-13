@@ -2,16 +2,35 @@
   <div class="v-picker__title" :class="classes">
     <div class="v-time-picker-title">
       <div class="v-time-picker-title__time">
-        <div class="v-picker__title__btn">
+        <div
+          @click="emit('update:selecting', SelectingTimes.Hour)"
+          class="v-picker__title__btn"
+          :class="{
+            'v-picker__title__btn--active': SelectingTimes.Hour === selecting,
+          }"
+        >
           {{ hour == null ? "--" : pad(hour) }}
         </div>
         <span> : </span>
-        <div class="v-picker__title__btn">
+        <div
+          @click="emit('update:selecting', SelectingTimes.Minute)"
+          class="v-picker__title__btn"
+          :class="{
+            'v-picker__title__btn--active': SelectingTimes.Minute === selecting,
+          }"
+        >
           {{ minute == null ? "--" : pad(minute) }}
         </div>
         <template v-if="useSeconds">
           <span> : </span>
-          <div class="v-picker__title__btn">
+          <div
+            @click="emit('update:selecting', SelectingTimes.Second)"
+            class="v-picker__title__btn"
+            :class="{
+              'v-picker__title__btn--active':
+                SelectingTimes.Second === selecting,
+            }"
+          >
             {{ second == null ? "--" : pad(second) }}
           </div>
         </template>
@@ -23,6 +42,9 @@
 <script lang="ts" setup>
 import { pad } from "@/utils/helpers";
 import { computed } from "vue";
+import { SelectingTimes } from "./constants";
+
+const emit = defineEmits(["update:selecting"]);
 
 const props = defineProps<{
   disabled?: boolean;
@@ -32,6 +54,7 @@ const props = defineProps<{
   readonly?: boolean;
   useSeconds?: boolean;
   color?: string;
+  selecting: SelectingTimes;
 }>();
 
 const classes = computed(() => ({

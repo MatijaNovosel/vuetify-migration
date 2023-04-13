@@ -5,6 +5,8 @@
       :hour="state.inputHour"
       :minute="state.inputMinute"
       :second="state.inputSecond"
+      :selecting="state.selecting"
+      @update:selecting="(value: 1 | 2 | 3) => (state.selecting = value)"
     />
     <time-picker-clock
       @input="onInput"
@@ -27,14 +29,9 @@
 <script lang="ts" setup>
 import { convertToUnit, pad } from "@/utils/helpers";
 import { computed, onMounted, reactive } from "vue";
+import { SelectingTimes } from "./constants";
 import timePickerClock from "./timePickerClock.vue";
 import timePickerTitle from "./timePickerTitle.vue";
-
-enum SelectingTimes {
-  Hour = 1,
-  Minute = 2,
-  Second = 3,
-}
 
 const emit = defineEmits([
   "input",
