@@ -1,7 +1,7 @@
 <template>
   <div class="d-flex flex-column justify-center items-center h-100 text-center">
     <span> Welcome to the home page </span>
-    <div class="mt-5 d-flex justify-center">
+    <div class="mt-5 d-flex justify-center flex-column align-center">
       <v-date-picker
         max="2020-04-12"
         min="2020-01-24"
@@ -10,6 +10,7 @@
         :value="state.date"
         @input="dateChanged"
       />
+      <v-time-picker :value="state.time" />
     </div>
     <speed-dial bottom right fixed direction="left">
       <template #activator="{ activate }">
@@ -25,10 +26,12 @@
 <script lang="ts" setup>
 import vDatePicker from "@/components/vuetify/datePicker/vDatePicker.vue";
 import speedDial from "@/components/vuetify/speedDial.vue";
+import vTimePicker from "@/components/vuetify/timePicker/vTimePicker.vue";
 import { reactive } from "vue";
 
 const state = reactive({
   date: new Date().toISOString().substring(0, 10),
+  time: null,
 });
 
 const dateChanged = (val: string) => {
