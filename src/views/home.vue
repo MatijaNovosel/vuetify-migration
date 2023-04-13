@@ -2,7 +2,7 @@
   <div class="d-flex flex-column justify-center items-center h-100 text-center">
     <span> Welcome to the home page </span>
     <div class="mt-5 d-flex justify-center">
-      <date-picker
+      <v-date-picker
         max="2020-04-12"
         min="2020-01-24"
         locale="en-us"
@@ -23,7 +23,7 @@
 </template>
 
 <script lang="ts" setup>
-import datePicker from "@/components/vuetify/datePicker/datePicker.vue";
+import vDatePicker from "@/components/vuetify/datePicker/vDatePicker.vue";
 import speedDial from "@/components/vuetify/speedDial.vue";
 import { reactive } from "vue";
 
