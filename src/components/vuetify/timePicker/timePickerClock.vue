@@ -1,7 +1,12 @@
 <template>
   <div class="v-picker__body">
     <div class="v-time-picker-clock__container">
-      <div class="v-time-picker-clock bg-grey-lighten-3">
+      <div
+        class="v-time-picker-clock bg-grey-lighten-3"
+        :class="{
+          'v-time-picker-clock--indeterminate': value == null,
+        }"
+      >
         <div class="v-time-picker-clock__inner">
           <div
             class="v-time-picker-clock__hand"
@@ -15,7 +20,7 @@
             :key="v"
             class="v-time-picker-clock__item"
             :class="{
-              'v-time-picker-clock__item--active': value === displayedValue,
+              'v-time-picker-clock__item--active': v === displayedValue,
             }"
             :style="getTransform(v)"
           >
@@ -140,25 +145,28 @@ watch(
   padding-top: 100%
   flex: 1 0 auto
 
+  .v-time-picker-clock__item--disabled
+    color: pink
+
+    &.v-time-picker-clock__item--active
+      color: purple
+
+  &--indeterminate
+    .v-time-picker-clock__hand
+      background-color: green
+
+    &:after
+      color: yellow
+
+    .v-time-picker-clock__item--active
+      background-color: red
+
   &__container
     display: flex
     flex-direction: column
     flex-basis: 290px
     justify-content: center
     padding: $time-picker-clock-padding
-
-  &__ampm
-    display: flex
-    flex-direction: row
-    justify-content: space-between
-    align-items: flex-end
-    position: absolute
-    width: 100%
-    height: 100%
-    top: 0
-    left: 0
-    margin: 0
-    padding: $time-picker-ampm-padding
 
   &__hand
     height: $time-picker-clock-hand-height
@@ -249,12 +257,4 @@ watch(
 
   &--disabled
     pointer-events: none
-
-.v-picker--landscape
-  .v-time-picker-clock
-    &__container
-      flex-direction: row
-
-    &__ampm
-      flex-direction: column
 </style>
