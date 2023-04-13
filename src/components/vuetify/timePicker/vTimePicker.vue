@@ -100,13 +100,9 @@ const emitValue = () => {
 };
 
 const onInput = (value: number) => {
-  if (state.selecting === SelectingTimes.Hour) {
-    state.inputHour = value;
-  } else if (state.selecting === SelectingTimes.Minute) {
-    state.inputMinute = value;
-  } else {
-    state.inputSecond = value;
-  }
+  if (state.selecting === SelectingTimes.Hour) state.inputHour = value;
+  else if (state.selecting === SelectingTimes.Minute) state.inputMinute = value;
+  else state.inputSecond = value;
   emitValue();
 };
 
@@ -126,12 +122,6 @@ const onChange = (value: number) => {
   const emitChange =
     state.selecting ===
     (props.useSeconds ? SelectingTimes.Second : SelectingTimes.Minute);
-
-  if (state.selecting === SelectingTimes.Hour) {
-    state.selecting = SelectingTimes.Minute;
-  } else if (props.useSeconds && state.selecting === SelectingTimes.Minute) {
-    state.selecting = SelectingTimes.Second;
-  }
 
   if (
     state.inputHour === state.lazyInputHour &&

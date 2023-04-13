@@ -56,6 +56,8 @@ const emit = defineEmits(["input", "change"]);
 const clock = ref<HTMLElement | null>(null);
 const innerClock = ref<HTMLElement | null>(null);
 
+const innerRadiusScale = 0.62;
+
 const props = defineProps<{
   disabled?: boolean;
   double?: boolean;
@@ -89,25 +91,15 @@ const clockHandStyle = computed(() => ({
   }deg) scaleY(${handScale(displayedValue.value)})}`,
 }));
 
-const count = computed(() => {
-  return props.max - props.min + 1;
-});
+const count = computed(() => props.max - props.min + 1);
 
-const degreesPerUnit = computed(() => {
-  return 360 / roundCount.value;
-});
+const degreesPerUnit = computed(() => 360 / roundCount.value);
 
-const degrees = computed(() => {
-  return (degreesPerUnit.value * Math.PI) / 180;
-});
+const degrees = computed(() => (degreesPerUnit.value * Math.PI) / 180);
 
-const displayedValue = computed(() => {
-  return props.value == null ? props.min : props.value;
-});
-
-const innerRadiusScale = computed(() => {
-  return 0.62;
-});
+const displayedValue = computed(() =>
+  props.value == null ? props.min : props.value
+);
 
 const roundCount = computed(() => {
   return props.double ? count.value / 2 : count.value;
@@ -121,7 +113,7 @@ const isInner = (value: number | null) => {
 };
 
 const handScale = (value: number) => {
-  return isInner(value) ? innerRadiusScale.value : 1;
+  return isInner(value) ? innerRadiusScale : 1;
 };
 
 const getPosition = (value: number) => {
@@ -175,9 +167,7 @@ const update = (value: number) => {
 };
 
 const setMouseDownValue = (value: number) => {
-  if (state.valueOnMouseDown === null) {
-    state.valueOnMouseDown = value;
-  }
+  if (state.valueOnMouseDown === null) state.valueOnMouseDown = value;
   state.valueOnMouseUp = value;
   update(value);
 };
@@ -194,7 +184,7 @@ const onDragMove = (e: MouseEvent | TouchEvent) => {
   const insideClick =
     props.double &&
     euclidean(center, coords) <
-      (innerWidth + innerWidth * innerRadiusScale.value) / 4;
+      (innerWidth + innerWidth * innerRadiusScale) / 4;
   const checksCount = Math.ceil(15 / degreesPerUnit.value);
   let value;
 
@@ -215,9 +205,7 @@ const onMouseDown = (e: MouseEvent | TouchEvent) => {
 const onMouseUp = (e: MouseEvent | TouchEvent) => {
   e.stopPropagation();
   state.isDragging = false;
-  if (state.valueOnMouseUp !== null) {
-    emit("change", state.valueOnMouseUp);
-  }
+  if (state.valueOnMouseUp !== null) emit("change", state.valueOnMouseUp);
 };
 
 watch(
