@@ -55,13 +55,8 @@ const years = computed(() => {
 
 onMounted(() => {
   setTimeout(() => {
-    const activeItem = document.getElementsByClassName(
-      "active"
-    )[0] as HTMLElement;
     yearList.value!.scrollTop =
-      activeItem.offsetTop -
-      yearList.value!.offsetHeight / 2 +
-      activeItem.offsetHeight / 2;
+      yearList.value!.scrollHeight / 2 - yearList.value!.offsetHeight / 2;
   }, 200);
 });
 </script>
