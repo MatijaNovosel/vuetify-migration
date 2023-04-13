@@ -2,12 +2,20 @@
   <div class="v-picker__body">
     <div class="v-time-picker-clock__container">
       <div
+        ref="clock"
+        @mousedown="onMouseDown"
+        @mouseup="onMouseUp"
+        @mouseleave="(e: MouseEvent) => (state.isDragging && onMouseUp(e))"
+        @touchstart="onMouseDown"
+        @touchend="onMouseUp"
+        @mousemove="onDragMove"
+        @touchmove="onDragMove"
         class="v-time-picker-clock bg-grey-lighten-3"
         :class="{
           'v-time-picker-clock--indeterminate': value == null,
         }"
       >
-        <div class="v-time-picker-clock__inner">
+        <div ref="innerClock" class="v-time-picker-clock__inner">
           <div
             class="v-time-picker-clock__hand"
             :style="clockHandStyle"
@@ -36,7 +44,17 @@
 
 <script lang="ts" setup>
 import { pad } from "@/utils/helpers";
-import { computed, reactive, watch } from "vue";
+import { computed, reactive, ref, watch } from "vue";
+
+interface Point {
+  x: number;
+  y: number;
+}
+
+const emit = defineEmits(["input", "change"]);
+
+const clock = ref<HTMLElement | null>(null);
+const innerClock = ref<HTMLElement | null>(null);
 
 const props = defineProps<{
   disabled?: boolean;
@@ -124,6 +142,82 @@ const getTransform = (i: number) => {
     left: `${50 + x * 50}%`,
     top: `${50 + y * 50}%`,
   };
+};
+
+const euclidean = (p0: Point, p1: Point) => {
+  const dx = p1.x - p0.x;
+  const dy = p1.y - p0.y;
+  return Math.sqrt(dx * dx + dy * dy);
+};
+
+const angle = (center: Point, p1: Point) => {
+  const value =
+    2 * Math.atan2(p1.y - center.y - euclidean(center, p1), p1.x - center.x);
+  return Math.abs((value * 180) / Math.PI);
+};
+
+const angleToValue = (angle: number, insideClick: boolean) => {
+  const value =
+    ((Math.round(angle / degreesPerUnit.value) +
+      (insideClick ? roundCount.value : 0)) %
+      count.value) +
+    props.min;
+  // Necessary to fix edge case when selecting left part of the value(s) at 12 o'clock
+  if (angle < 360 - degreesPerUnit.value / 2) return value;
+  return insideClick ? props.max - roundCount.value + 1 : props.min;
+};
+
+const update = (value: number) => {
+  if (state.inputValue !== value) {
+    state.inputValue = value;
+    emit("input", value);
+  }
+};
+
+const setMouseDownValue = (value: number) => {
+  if (state.valueOnMouseDown === null) {
+    state.valueOnMouseDown = value;
+  }
+  state.valueOnMouseUp = value;
+  update(value);
+};
+
+const onDragMove = (e: MouseEvent | TouchEvent) => {
+  e.preventDefault();
+  if ((!state.isDragging && e.type !== "click") || !clock.value) return;
+  const { width, top, left } = clock.value.getBoundingClientRect();
+  const { width: innerWidth } = innerClock.value!.getBoundingClientRect();
+  const { clientX, clientY } = "touches" in e ? e.touches[0] : e;
+  const center = { x: width / 2, y: -width / 2 };
+  const coords = { x: clientX - left, y: top - clientY };
+  const handAngle = Math.round(angle(center, coords) - 0 + 360) % 360;
+  const insideClick =
+    props.double &&
+    euclidean(center, coords) <
+      (innerWidth + innerWidth * innerRadiusScale.value) / 4;
+  const checksCount = Math.ceil(15 / degreesPerUnit.value);
+  let value;
+
+  for (let i = 0; i < checksCount; i++) {
+    value = angleToValue(handAngle + i * degreesPerUnit.value, insideClick);
+    return setMouseDownValue(value);
+  }
+};
+
+const onMouseDown = (e: MouseEvent | TouchEvent) => {
+  e.preventDefault();
+  state.valueOnMouseDown = null;
+  state.valueOnMouseUp = null;
+  state.isDragging = true;
+  onDragMove(e);
+};
+
+const onMouseUp = (e: MouseEvent | TouchEvent) => {
+  e.stopPropagation();
+  state.isDragging = false;
+  if (state.valueOnMouseUp !== null) {
+    emit("change", state.valueOnMouseUp);
+  }
 };
 
 watch(
