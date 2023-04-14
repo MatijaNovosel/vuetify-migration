@@ -19,11 +19,5 @@ onMounted(() => {
     txtColor: "white",
     timeout: 5000,
   });
-  toastStore.createToast({
-    msg: "✅ And another message!",
-    color: "#16c60c",
-    txtColor: "white",
-    timeout: 5000,
-  });
 });
 </script>

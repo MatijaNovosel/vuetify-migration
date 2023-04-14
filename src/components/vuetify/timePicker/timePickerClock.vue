@@ -35,7 +35,7 @@
             :style="getTransform(v)"
           >
             <span>
-              {{ pad(v, 2) }}
+              {{ selecting === SelectingTimes.Hour ? v : pad(v, 2) }}
             </span>
           </span>
         </div>
@@ -47,6 +47,7 @@
 <script lang="ts" setup>
 import { pad } from "@/utils/helpers";
 import { computed, reactive, ref, watch } from "vue";
+import { SelectingTimes } from "./constants";
 
 interface Point {
   x: number;
@@ -62,10 +63,10 @@ const innerRadiusScale = 0.62;
 
 const props = defineProps<{
   disabled?: boolean;
-  double?: boolean;
   readonly?: boolean;
   color?: string;
   value: number | null;
+  selecting: number;
   min: number;
   max: number;
   step: number;
@@ -80,36 +81,37 @@ const state = reactive({
 
 const values = computed(() => {
   const res = [];
-
   for (let value = props.min; value <= props.max; value = value + props.step) {
     res.push(value);
   }
-
   return res;
 });
 
 const count = computed(() => props.max - props.min + 1);
 
+const roundCount = computed(() =>
+  selectingHour.value ? count.value / 2 : count.value
+);
+
 const degreesPerUnit = computed(() => 360 / roundCount.value);
 
 const degrees = computed(() => (degreesPerUnit.value * Math.PI) / 180);
 
+const selectingHour = computed(() => props.selecting === SelectingTimes.Hour);
+
 const clockHandStyle = computed(() => ({
   transform: `rotate(${
     degreesPerUnit.value * (displayedValue.value - props.min)
-  }deg) scaleY(${handScale(displayedValue.value)})}`,
+  }deg) scaleY(${handScale(displayedValue.value)})`,
 }));
 
 const displayedValue = computed(() =>
   props.value == null ? props.min : props.value
 );
 
-const roundCount = computed(() =>
-  props.double ? count.value / 2 : count.value
-);
-
 const isInner = (value: number | null) => {
-  if (value) return props.double && value - props.min >= roundCount.value;
+  if (value)
+    return selectingHour.value && value - props.min >= roundCount.value;
   return false;
 };
 
@@ -181,7 +183,7 @@ const onDragMove = (e: MouseEvent | TouchEvent) => {
   const coords = { x: clientX - left, y: top - clientY };
   const handAngle = Math.round(angle(center, coords) - 0 + 360) % 360;
   const insideClick =
-    props.double &&
+    selectingHour.value &&
     euclidean(center, coords) <
       (innerWidth + innerWidth * innerRadiusScale) / 4;
   const checksCount = Math.ceil(15 / degreesPerUnit.value);

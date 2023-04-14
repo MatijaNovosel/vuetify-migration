@@ -1,5 +1,5 @@
 <template>
-  <div class="v-picker v-picker--time" :style="styles">
+  <div :style="styles">
     <time-picker-title
       color="green"
       :hour="state.inputHour"
@@ -13,9 +13,9 @@
       @input="onInput"
       @change="onChange"
       :step="state.selecting === SelectingTimes.Hour ? 1 : 5"
-      :double="state.selecting === SelectingTimes.Hour"
       :min="0"
       :max="state.selecting === SelectingTimes.Hour ? 23 : 59"
+      :selecting="state.selecting"
       :value="
         state.selecting === SelectingTimes.Hour
           ? state.inputHour
@@ -141,7 +141,5 @@ const onChange = (value: number) => {
   emitChange && emit("change", time);
 };
 
-onMounted(() => {
-  setInputData(props.value);
-});
+onMounted(() => setInputData(props.value));
 </script>
