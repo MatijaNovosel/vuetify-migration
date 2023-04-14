@@ -8,8 +8,7 @@
         min="2020-01-24"
         locale="en-us"
         color="green lighten-1"
-        :value="state.date"
-        @input="dateChanged"
+        v-model="state.date"
       />
       <v-time-picker use-seconds v-model="state.time" class="ml-5" />
     </div>
@@ -34,8 +33,4 @@ const state = reactive({
   date: new Date().toISOString().substring(0, 10),
   time: null,
 });
-
-const dateChanged = (val: string) => {
-  state.date = val;
-};
 </script>

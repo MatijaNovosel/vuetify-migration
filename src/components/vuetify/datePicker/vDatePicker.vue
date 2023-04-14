@@ -26,7 +26,7 @@
     />
     <date-picker-date-table
       v-if="state.internalActivePicker === 'DATE'"
-      :value="value"
+      :value="modelValue"
       :color="color"
       :table-date="`${tableYear.toString().padStart(4, '0')}-${(tableMonth + 1)
         .toString()
@@ -74,7 +74,7 @@ import {
   DatePickerValue,
 } from "./models";
 
-const emit = defineEmits(["input", "change"]);
+const emit = defineEmits(["update:modelValue", "change"]);
 
 const props = defineProps<{
   allowedDates?: DatePickerAllowedDatesFunction;
@@ -91,7 +91,7 @@ const props = defineProps<{
   showCurrent?: boolean | string;
   selectedItemsText?: string;
   showAdjacentMonths?: boolean;
-  value: DatePickerValue;
+  modelValue: DatePickerValue;
   locale?: string;
   fullWidth?: boolean;
   noTitle?: boolean;
@@ -105,7 +105,7 @@ const styles = computed(() => ({
 
 const pickerTitle = computed(() =>
   (formatters.value.titleDate as (value: any) => string)!(
-    isMultiple.value ? multipleValue.value : props.value
+    isMultiple.value ? multipleValue.value : props.modelValue
   )
 );
 
@@ -120,23 +120,23 @@ const state = reactive({
   tableDate: now.toISOString().substring(0, 10),
 });
 
-const multipleValue = computed(() => wrapInArray(props.value));
+const multipleValue = computed(() => wrapInArray(props.modelValue));
 
 const isMultiple = computed(() => props.multiple || props.range);
 
 const lastValue = computed(() =>
   isMultiple.value
     ? multipleValue.value[multipleValue.value.length - 1]
-    : (props.value as string | null)
+    : (props.modelValue as string | null)
 );
 
 const selectedMonths = computed(() => {
-  if (!props.value) {
-    return props.value;
+  if (!props.modelValue) {
+    return props.modelValue;
   } else if (isMultiple.value) {
     return multipleValue.value.map((val) => val.substring(0, 7));
   } else {
-    return (props.value as string).substring(0, 7);
+    return (props.modelValue as string).substring(0, 7);
   }
 });
 
@@ -199,10 +199,10 @@ const defaultTitleDateFormatter = computed(() =>
 const emitInput = (newInput: string) => {
   if (props.range) {
     if (multipleValue.value.length !== 1) {
-      emit("input", [newInput]);
+      emit("update:modelValue", [newInput]);
     } else {
       const output = [multipleValue.value[0], newInput];
-      emit("input", output);
+      emit("update:modelValue", output);
       emit("change", output);
     }
     return;
@@ -214,13 +214,13 @@ const emitInput = (newInput: string) => {
       : multipleValue.value.filter((x) => x !== newInput)
     : newInput;
 
-  emit("input", output);
+  emit("update:modelValue", output);
   props.multiple || emit("change", newInput);
 };
 
 const checkMultipleProp = () => {
-  if (props.value == null) return;
-  const valueType = props.value.constructor.name;
+  if (props.modelValue == null) return;
+  const valueType = props.modelValue.constructor.name;
   const expected = isMultiple.value ? "Array" : "String";
   if (valueType !== expected) {
     console.warn(
@@ -242,7 +242,7 @@ const yearClick = (value: number) => {
     !isMultiple.value &&
     isDateAllowed(inputDate.value, props.min, props.max, props.allowedDates)
   ) {
-    emit("input", inputDate.value);
+    emit("update:modelValue", inputDate.value);
   }
 };
 
@@ -262,7 +262,7 @@ const monthClick = (value: string) => {
     !isMultiple.value &&
     isDateAllowed(inputDate.value, props.min, props.max, props.allowedDates)
   ) {
-    emit("input", inputDate.value);
+    emit("update:modelValue", inputDate.value);
   }
 };
 
@@ -288,12 +288,12 @@ const setInputDate = () => {
 };
 
 watch(
-  () => props.value,
+  () => props.modelValue,
   (val) => {
     checkMultipleProp();
     setInputDate();
     if (
-      (!isMultiple.value && props.value && !props.pickerDate) ||
+      (!isMultiple.value && props.modelValue && !props.pickerDate) ||
       (isMultiple.value &&
         multipleValue.value.length &&
         (!val || !val.length) &&
@@ -306,7 +306,7 @@ watch(
 
 onMounted(() => {
   if (props.pickerDate) return props.pickerDate;
-  const multipleValue = wrapInArray(props.value);
+  const multipleValue = wrapInArray(props.modelValue);
   const date =
     multipleValue[multipleValue.length - 1] ||
     (typeof props.showCurrent === "string"
