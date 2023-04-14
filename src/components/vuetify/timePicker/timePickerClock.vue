@@ -20,7 +20,7 @@
             class="v-time-picker-clock__hand"
             :style="clockHandStyle"
             :class="{
-              'v-time-picker-clock__hand--inner': isInner(value),
+              [`bg-${color || 'accent'}`]: value !== null,
             }"
           />
           <span
@@ -29,6 +29,8 @@
             class="v-time-picker-clock__item"
             :class="{
               'v-time-picker-clock__item--active': v === displayedValue,
+              [`bg-${color || 'accent'}`]:
+                value !== null && v === displayedValue,
             }"
             :style="getTransform(v)"
           >
@@ -62,6 +64,7 @@ const props = defineProps<{
   disabled?: boolean;
   double?: boolean;
   readonly?: boolean;
+  color?: string;
   value: number | null;
   min: number;
   max: number;
@@ -85,36 +88,32 @@ const values = computed(() => {
   return res;
 });
 
-const clockHandStyle = computed(() => ({
-  transform: `rotate(${
-    degreesPerUnit.value * (displayedValue.value - props.min)
-  }deg) scaleY(${handScale(displayedValue.value)})}`,
-}));
-
 const count = computed(() => props.max - props.min + 1);
 
 const degreesPerUnit = computed(() => 360 / roundCount.value);
 
 const degrees = computed(() => (degreesPerUnit.value * Math.PI) / 180);
 
+const clockHandStyle = computed(() => ({
+  transform: `rotate(${
+    degreesPerUnit.value * (displayedValue.value - props.min)
+  }deg) scaleY(${handScale(displayedValue.value)})}`,
+}));
+
 const displayedValue = computed(() =>
   props.value == null ? props.min : props.value
 );
 
-const roundCount = computed(() => {
-  return props.double ? count.value / 2 : count.value;
-});
+const roundCount = computed(() =>
+  props.double ? count.value / 2 : count.value
+);
 
 const isInner = (value: number | null) => {
-  if (value) {
-    return props.double && value - props.min >= roundCount.value;
-  }
+  if (value) return props.double && value - props.min >= roundCount.value;
   return false;
 };
 
-const handScale = (value: number) => {
-  return isInner(value) ? innerRadiusScale : 1;
-};
+const handScale = (value: number) => (isInner(value) ? innerRadiusScale : 1);
 
 const getPosition = (value: number) => {
   const rotateRadians = Math.PI / 180;
@@ -210,9 +209,7 @@ const onMouseUp = (e: MouseEvent | TouchEvent) => {
 
 watch(
   () => props.value,
-  (val) => {
-    state.inputValue = val;
-  }
+  (val) => (state.inputValue = val)
 );
 </script>
 
@@ -263,9 +260,6 @@ watch(
 
     &:before
       background: transparent
-      border-width: $time-picker-clock-end-border-width
-      border-style: $time-picker-clock-end-border-style
-      border-color: $time-picker-clock-end-border-color
       border-radius: 100%
       width: $time-picker-clock-end-size
       height: $time-picker-clock-end-size
@@ -284,12 +278,9 @@ watch(
       left: 50%
       border-radius: 100%
       border-style: solid
-      border-color: inherit
-      background-color: inherit
+      border-color: v-bind('color')
+      background-color: v-bind('color')
       transform: translate(-50%, -50%)
-
-    &--inner:after
-      height: $time-picker-clock-inner-hand-height
 
 .v-picker--full-width
   .v-time-picker-clock__container

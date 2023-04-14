@@ -9,6 +9,7 @@
       @update:selecting="(value: 1 | 2 | 3) => (state.selecting = value)"
     />
     <time-picker-clock
+      color="green"
       @input="onInput"
       @change="onChange"
       :step="state.selecting === SelectingTimes.Hour ? 1 : 5"
