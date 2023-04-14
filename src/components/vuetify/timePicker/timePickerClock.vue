@@ -35,7 +35,11 @@
             :style="getTransform(v)"
           >
             <span>
-              {{ selecting === SelectingTimes.Hour ? v : pad(v, 2) }}
+              {{
+                selecting === SelectingTimes.Hour
+                  ? v
+                  : v.toString().padStart(2, "0")
+              }}
             </span>
           </span>
         </div>
@@ -45,7 +49,6 @@
 </template>
 
 <script lang="ts" setup>
-import { pad } from "@/utils/helpers";
 import { computed, reactive, ref, watch } from "vue";
 import { SelectingTimes } from "./constants";
 

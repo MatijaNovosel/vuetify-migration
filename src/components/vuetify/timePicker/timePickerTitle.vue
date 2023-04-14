@@ -9,7 +9,7 @@
             'v-picker__title__btn--active': SelectingTimes.Hour === selecting,
           }"
         >
-          {{ hour == null ? "--" : pad(hour) }}
+          {{ hour == null ? "--" : hour.toString().padStart(2, "0") }}
         </div>
         <span> : </span>
         <div
@@ -19,7 +19,7 @@
             'v-picker__title__btn--active': SelectingTimes.Minute === selecting,
           }"
         >
-          {{ minute == null ? "--" : pad(minute) }}
+          {{ minute == null ? "--" : minute.toString().padStart(2, "0") }}
         </div>
         <template v-if="useSeconds">
           <span> : </span>
@@ -31,7 +31,7 @@
                 SelectingTimes.Second === selecting,
             }"
           >
-            {{ second == null ? "--" : pad(second) }}
+            {{ second == null ? "--" : second.toString().padStart(2, "0") }}
           </div>
         </template>
       </div>
@@ -40,7 +40,6 @@
 </template>
 
 <script lang="ts" setup>
-import { pad } from "@/utils/helpers";
 import { computed } from "vue";
 import { SelectingTimes } from "./constants";
 

@@ -19,7 +19,6 @@
 </template>
 
 <script lang="ts" setup>
-import { pad } from "@/utils/helpers";
 import { computed } from "vue";
 import { createNativeLocaleFormatter } from "./helpers";
 
@@ -63,7 +62,9 @@ const rows = computed(() => {
   for (let row = 0; row < rows; row++) {
     const tds = cols.map((_, col) => {
       const month = row * cols.length + col;
-      const date = `${displayedYear.value}-${pad(month + 1)}`;
+      const date = `${displayedYear.value}-${(month + 1)
+        .toString()
+        .padStart(2, "0")}`;
       return date;
     });
     res.push(tds);

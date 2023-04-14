@@ -28,7 +28,7 @@
 </template>
 
 <script lang="ts" setup>
-import { convertToUnit, pad } from "@/utils/helpers";
+import { convertToUnit } from "@/utils/helpers";
 import { computed, onMounted, reactive } from "vue";
 import { SelectingTimes } from "./constants";
 import timePickerClock from "./timePickerClock.vue";
@@ -40,6 +40,7 @@ const emit = defineEmits([
   "click:hour",
   "click:minute",
   "click:second",
+  "update:modelValue",
 ]);
 
 const props = defineProps<{
@@ -51,7 +52,7 @@ const props = defineProps<{
   scrollable?: boolean;
   useSeconds?: boolean;
   color?: string;
-  value: any;
+  modelValue: any;
   width?: number | string;
 }>();
 
@@ -88,8 +89,12 @@ const genValue = () => {
     (!props.useSeconds || state.inputSecond != null)
   ) {
     return (
-      `${pad(state.inputHour)}:${pad(state.inputMinute)}` +
-      (props.useSeconds ? `:${pad(state.inputSecond!)}` : "")
+      `${state.inputHour.toString().padStart(2, "0")}:${state.inputMinute
+        .toString()
+        .padStart(2, "0")}` +
+      (props.useSeconds
+        ? `:${state.inputSecond!.toString().padStart(2, "0")}`
+        : "")
     );
   }
   return null;
@@ -97,7 +102,7 @@ const genValue = () => {
 
 const emitValue = () => {
   const value = genValue();
-  if (value !== null) emit("input", value);
+  if (value !== null) emit("update:modelValue", value);
 };
 
 const onInput = (value: number) => {
@@ -141,5 +146,5 @@ const onChange = (value: number) => {
   emitChange && emit("change", time);
 };
 
-onMounted(() => setInputData(props.value));
+onMounted(() => setInputData(props.modelValue));
 </script>

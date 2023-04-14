@@ -33,35 +33,14 @@ export function wrapInArray<T>(v: T | T[] | null | undefined): T[] {
   return v != null ? (Array.isArray(v) ? v : [v]) : [];
 }
 
-const padStart = (
-  string: number | string,
-  targetLength: number,
-  padString: string
-) => {
-  targetLength = targetLength >> 0;
-  string = String(string);
-  padString = String(padString);
-  if (string.length > targetLength) return String(string);
-  targetLength = targetLength - string.length;
-  if (targetLength > padString.length) {
-    padString += padString.repeat(targetLength / padString.length);
-  }
-  return padString.slice(0, targetLength) + String(string);
-};
-
-export function pad(n: string | number, length = 2) {
-  return padStart(n, length, "0");
-}
-
 export function sanitizeDateString(
   dateString: string,
   type: "date" | "month" | "year"
 ): string {
   const [year, month = 1, date = 1] = dateString.split("-");
-  return `${year}-${pad(month)}-${pad(date)}`.substring(
-    0,
-    { date: 10, month: 7, year: 4 }[type]
-  );
+  return `${year}-${month.toString().padStart(2, "0")}-${date
+    .toString()
+    .padStart(2, "0")}`.substring(0, { date: 10, month: 7, year: 4 }[type]);
 }
 
 export function createRange(length: number): number[] {

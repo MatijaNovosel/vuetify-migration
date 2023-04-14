@@ -4,7 +4,7 @@
       v-if="!noTitle"
       :color="color"
       :date="pickerTitle"
-      :year="pad(tableYear, 4)"
+      :year="tableYear.toString().padStart(4, '0')"
       :selecting-year="state.internalActivePicker === 'YEAR'"
       @select-year="(value: boolean) => state.internalActivePicker = value ? 'YEAR' : 'DATE'"
     />
@@ -13,8 +13,10 @@
       :color="color"
       :value="
         state.internalActivePicker === 'DATE'
-          ? `${pad(tableYear, 4)}-${pad(tableMonth + 1)}`
-          : `${pad(tableYear, 4)}`
+          ? `${tableYear.toString().padStart(4, '0')}-${(tableMonth + 1)
+              .toString()
+              .padStart(2, '0')}`
+          : `${tableYear.toString().padStart(4, '0')}`
       "
       @input="(value: string) => state.tableDate = value"
       @toggle="
@@ -26,14 +28,16 @@
       v-if="state.internalActivePicker === 'DATE'"
       :value="value"
       :color="color"
-      :table-date="`${pad(tableYear, 4)}-${pad(tableMonth + 1)}`"
+      :table-date="`${tableYear.toString().padStart(4, '0')}-${(tableMonth + 1)
+        .toString()
+        .padStart(2, '0')}`"
       @input="dateClick"
     />
     <date-picker-month-table
       v-else-if="state.internalActivePicker === 'MONTH'"
       :value="selectedMonths"
       :color="color"
-      :table-date="pad(tableYear, 4)"
+      :table-date="tableYear.toString().padStart(4, '0')"
       @input="monthClick"
     />
     <date-picker-years
@@ -48,7 +52,6 @@
 <script lang="ts" setup>
 import {
   convertToUnit,
-  pad,
   sanitizeDateString,
   wrapInArray,
 } from "@/utils/helpers";
@@ -139,7 +142,9 @@ const selectedMonths = computed(() => {
 
 const inputDate = computed(
   () =>
-    `${state.inputYear}-${pad(state.inputMonth! + 1)}-${pad(state.inputDay!)}`
+    `${state.inputYear}-${(state.inputMonth! + 1)
+      .toString()
+      .padStart(2, "0")}-${state.inputDay!.toString().padStart(2, "0")}`
 );
 
 const tableMonth = computed(
@@ -228,7 +233,9 @@ const checkMultipleProp = () => {
 
 const yearClick = (value: number) => {
   state.inputYear = value;
-  state.tableDate = `${value}-${pad((tableMonth.value || 0) + 1)}`;
+  state.tableDate = `${value}-${((tableMonth.value || 0) + 1)
+    .toString()
+    .padStart(2, "0")}`;
   state.internalActivePicker = "MONTH";
   if (
     !props.readonly &&

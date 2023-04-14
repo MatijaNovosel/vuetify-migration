@@ -1,4 +1,3 @@
-import { pad } from "@/utils/helpers";
 import { DAYS_IN_MONTH, DAYS_IN_MONTH_LEAP } from "./constants";
 import {
   DatePickerAllowedDatesFunction,
@@ -8,7 +7,11 @@ import {
 
 const makeIsoString = (dateString: string) => {
   const [year, month, date] = dateString.trim().split(" ")[0].split("-");
-  return [pad(year, 4), pad(month || 1), pad(date || 1)].join("-");
+  return [
+    year.toString().padStart(4, "0"),
+    (month || 1).toString().padStart(2, "0"),
+    (date || 1).toString().padStart(2, "0"),
+  ].join("-");
 };
 
 export function createNativeLocaleFormatter(
@@ -144,6 +147,6 @@ export const monthChange = (value: string, sign: number) => {
   } else if (month + sign === 13) {
     return `${year + 1}-01`;
   } else {
-    return `${year}-${pad(month + sign)}`;
+    return `${year}-${(month + sign).toString().padStart(2, "0")}`;
   }
 };

@@ -29,7 +29,7 @@
 </template>
 
 <script lang="ts" setup>
-import { createRange, pad } from "@/utils/helpers";
+import { createRange } from "@/utils/helpers";
 import { computed } from "vue";
 import { createNativeLocaleFormatter } from "./helpers";
 import { DatePickerAllowedDatesFunction } from "./models";
@@ -80,7 +80,9 @@ const displayedYear = computed(() => Number(props.tableDate.split("-")[0]));
 
 const weekDaysBeforeFirstDayOfTheMonth = () => {
   const firstDayOfTheMonth = new Date(
-    `${displayedYear.value}-${pad(displayedMonth.value + 1)}-01T00:00:00+00:00`
+    `${displayedYear.value}-${(displayedMonth.value + 1)
+      .toString()
+      .padStart(2, "0")}-01T00:00:00+00:00`
   );
   const weekDay = firstDayOfTheMonth.getUTCDay();
   return (weekDay - parseInt((props.firstDayOfWeek || 0).toString()) + 7) % 7;
@@ -124,17 +126,19 @@ const rows = computed(() => {
 
   // Days before current month
   while (day--) {
-    const date = `${prevMonthYear}-${pad(prevMonth + 1)}-${pad(
-      firstDayFromPreviousMonth - day
-    )}`;
+    const date = `${prevMonthYear}-${(prevMonth + 1)
+      .toString()
+      .padStart(2, "0")}-${(firstDayFromPreviousMonth - day)
+      .toString()
+      .padStart(2, "0")}`;
     row.push(props.showAdjacentMonths ? date : "");
   }
 
   // Days in current month
   for (let day = 1; day <= daysInMonth; day++) {
-    const date = `${displayedYear.value}-${pad(displayedMonth.value + 1)}-${pad(
-      day
-    )}`;
+    const date = `${displayedYear.value}-${(displayedMonth.value + 1)
+      .toString()
+      .padStart(2, "0")}-${day.toString().padStart(2, "0")}`;
     row.push(date);
     if (row.length % cellsInRow === 0) {
       rows.push(row);
@@ -144,9 +148,9 @@ const rows = computed(() => {
 
   // Days after current month
   while (row.length < cellsInRow) {
-    const date = `${nextMonthYear}-${pad(nextMonth + 1)}-${pad(
-      nextMonthDay++
-    )}`;
+    const date = `${nextMonthYear}-${(nextMonth + 1)
+      .toString()
+      .padStart(2, "0")}-${(nextMonthDay++).toString().padStart(2, "0")}`;
     row.push(props.showAdjacentMonths ? date : "");
   }
 
