@@ -11,7 +11,7 @@
         :value="state.date"
         @input="dateChanged"
       />
-      <v-time-picker v-model="state.time" class="ml-5" />
+      <v-time-picker use-seconds v-model="state.time" class="ml-5" />
     </div>
     <speed-dial bottom right fixed direction="left">
       <template #activator="{ activate }">

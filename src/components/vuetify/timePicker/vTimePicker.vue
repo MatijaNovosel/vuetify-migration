@@ -6,12 +6,14 @@
       :minute="state.inputMinute"
       :second="state.inputSecond"
       :selecting="state.selecting"
+      :use-seconds="useSeconds"
       @update:selecting="(value: 1 | 2 | 3) => (state.selecting = value)"
     />
     <time-picker-clock
       color="green"
       @input="onInput"
       @change="onChange"
+      :use-seconds="useSeconds"
       :step="state.selecting === SelectingTimes.Hour ? 1 : 5"
       :min="0"
       :max="state.selecting === SelectingTimes.Hour ? 23 : 59"
@@ -35,7 +37,6 @@ import timePickerClock from "./timePickerClock.vue";
 import timePickerTitle from "./timePickerTitle.vue";
 
 const emit = defineEmits([
-  "input",
   "change",
   "click:hour",
   "click:minute",
