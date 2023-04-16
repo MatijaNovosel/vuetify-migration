@@ -21,6 +21,7 @@
             :style="clockHandStyle"
             :class="{
               [`bg-${color || 'accent'}`]: value !== null,
+              'v-time-picker-clock__hand--inner': isInner(value),
             }"
           />
           <span
@@ -286,6 +287,9 @@ watch(
       border-color: v-bind('color')
       background-color: v-bind('color')
       transform: translate(-50%, -50%)
+
+    &--inner:after
+      height: $time-picker-clock-inner-hand-height
 
 .v-picker--full-width
   .v-time-picker-clock__container
