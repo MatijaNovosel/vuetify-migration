@@ -14,6 +14,7 @@
             class="v-date-picker-table__current"
             :class="{
               [`bg-${color || 'accent'}`]: isSelected(d),
+              'bg-green-lighten-3 text-white': d === currentDate,
             }"
             variant="text"
             icon
@@ -51,6 +52,8 @@ const props = defineProps<{
   currentLocale?: string;
   color?: string;
 }>();
+
+const currentDate = computed(() => new Date().toISOString().substring(0, 10));
 
 const formatter = createNativeLocaleFormatter(
   props.currentLocale,
