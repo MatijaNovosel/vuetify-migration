@@ -5,7 +5,13 @@
 <script lang="ts" setup>
 import { getObjectValueByPath } from "@/utils/helpers";
 import { computed, reactive } from "vue";
-import { TreeViewNodeProps } from "./models";
+import { TreeViewPropsBase } from "./models";
+
+interface TreeViewNodeProps extends TreeViewPropsBase {
+  level?: number;
+  item?: Object | null;
+  parentIsDisabled?: boolean;
+}
 
 const props = defineProps<TreeViewNodeProps>();
 
@@ -29,7 +35,7 @@ const classes = computed(() => ({
 
 const disabled = computed(() => {
   return (
-    getObjectValueByPath(props.item, props.itemDisabled) ||
+    getObjectValueByPath(props.item, props.itemDisabled || "") ||
     (!props.disablePerNode &&
       props.parentIsDisabled &&
       props.selectionType === "leaf")

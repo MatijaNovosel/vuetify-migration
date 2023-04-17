@@ -5,7 +5,22 @@
 <script lang="ts" setup>
 import { computed, reactive } from "vue";
 import { filterTreeItem, filterTreeItems } from "./helper";
-import { NodeCache, NodeState, TreeViewProps } from "./models";
+import { NodeCache, NodeState, TreeViewPropsBase } from "./models";
+
+interface TreeViewProps extends TreeViewPropsBase {
+  active?: any[];
+  dense?: boolean;
+  disabled?: boolean;
+  filter?: () => void;
+  hoverable?: boolean;
+  items: any[];
+  multipleActive?: boolean;
+  open?: any[];
+  openAll?: boolean;
+  returnObject?: boolean;
+  search?: string;
+  value?: any[];
+}
 
 const props = defineProps<TreeViewProps>();
 
