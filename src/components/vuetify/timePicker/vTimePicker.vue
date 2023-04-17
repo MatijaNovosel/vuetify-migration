@@ -131,7 +131,7 @@ const onChange = (value: number) => {
     state.selecting ===
     (props.useSeconds ? SelectingTimes.Second : SelectingTimes.Minute);
 
-  if (props.automatic === true) {
+  if (props.automatic === true || props.automatic === undefined) {
     if (state.selecting === SelectingTimes.Hour) {
       state.selecting = SelectingTimes.Minute;
     } else if (props.useSeconds && state.selecting === SelectingTimes.Minute) {
