@@ -1,11 +1,13 @@
 <template>
   <div class="v-calendar">
     <calendar-monthly />
+    <calendar-weekly :weekdays="[1, 2, 3, 4, 5]" />
   </div>
 </template>
 
 <script lang="ts" setup>
 import calendarMonthly from "./calendarMonthly.vue";
+import calendarWeekly from "./calendarWeekly.vue";
 import {
   CalendarCategory,
   CalendarCategoryTextFunction,

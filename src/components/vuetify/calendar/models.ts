@@ -52,3 +52,5 @@ export interface CalendarTimestamp {
 export type CalendarTimestampOperation = (
   timestamp: CalendarTimestamp
 ) => CalendarTimestamp;
+
+export type VTimestampInput = number | string | Date;

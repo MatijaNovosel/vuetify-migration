@@ -20,3 +20,6 @@ export const OFFSET_YEAR = 10000;
 export const OFFSET_MONTH = 100;
 export const OFFSET_HOUR = 100;
 export const OFFSET_TIME = 10000;
+export const PARSE_REGEX =
+  /^(\d{4})-(\d{1,2})(-(\d{1,2}))?([^\d]+(\d{1,2}))?(:(\d{1,2}))?(:(\d{1,2}))?$/;
+export const PARSE_TIME = /(\d\d?)(:(\d\d?)|)(:(\d\d?)|)/;
