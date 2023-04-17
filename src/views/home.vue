@@ -52,6 +52,14 @@
       />
       <v-time-picker automatic use-seconds v-model="state.time" class="ml-5" />
     </div>
+    <div class="mt-5 d-flex justify-center">
+      <v-tree-view
+        :items="[]"
+        item-children=""
+        item-key="key"
+        item-text="text"
+      />
+    </div>
     <v-speed-dial bottom right fixed direction="left">
       <template #activator="{ activate }">
         <v-btn @click="activate()" color="error" icon="mdi-vuetify" />
@@ -66,6 +74,7 @@
 <script lang="ts" setup>
 import vDatePicker from "@/components/vuetify/datePicker/vDatePicker.vue";
 import vTimePicker from "@/components/vuetify/timePicker/vTimePicker.vue";
+import vTreeView from "@/components/vuetify/treeView/vTreeView.vue";
 import vSpeedDial from "@/components/vuetify/vSpeedDial.vue";
 import { reactive } from "vue";
 
