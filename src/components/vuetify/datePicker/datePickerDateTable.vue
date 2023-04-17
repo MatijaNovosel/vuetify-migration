@@ -14,7 +14,8 @@
             class="v-date-picker-table__current"
             :class="{
               [`bg-${color || 'accent'}`]: isSelected(d),
-              'bg-green-lighten-3 text-white': d === currentDate,
+              'bg-green-lighten-3 text-white':
+                d === currentDate && !isSelected(d),
             }"
             variant="text"
             icon
