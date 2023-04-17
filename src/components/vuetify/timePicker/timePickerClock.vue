@@ -266,6 +266,9 @@ watch(
 
     &:before
       background: transparent
+      border-width: $time-picker-clock-end-border-width
+      border-style: $time-picker-clock-end-border-style
+      border-color: v-bind(color)
       border-radius: 100%
       width: $time-picker-clock-end-size
       height: $time-picker-clock-end-size

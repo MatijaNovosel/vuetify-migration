@@ -50,7 +50,7 @@
         color="green lighten-1"
         v-model="state.date"
       />
-      <v-time-picker use-seconds v-model="state.time" class="ml-5" />
+      <v-time-picker automatic use-seconds v-model="state.time" class="ml-5" />
     </div>
     <v-speed-dial bottom right fixed direction="left">
       <template #activator="{ activate }">

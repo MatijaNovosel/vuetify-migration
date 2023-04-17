@@ -52,6 +52,7 @@ const props = defineProps<{
   fullWidth?: boolean;
   scrollable?: boolean;
   useSeconds?: boolean;
+  automatic?: boolean;
   color?: string;
   modelValue: any;
   width?: number | string;
@@ -129,6 +130,14 @@ const onChange = (value: number) => {
   const emitChange =
     state.selecting ===
     (props.useSeconds ? SelectingTimes.Second : SelectingTimes.Minute);
+
+  if (props.automatic === true) {
+    if (state.selecting === SelectingTimes.Hour) {
+      state.selecting = SelectingTimes.Minute;
+    } else if (props.useSeconds && state.selecting === SelectingTimes.Minute) {
+      state.selecting = SelectingTimes.Second;
+    }
+  }
 
   if (
     state.inputHour === state.lazyInputHour &&
