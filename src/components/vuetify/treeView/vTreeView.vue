@@ -1,11 +1,26 @@
 <template>
-  <div class="v-treeview">Hello</div>
+  <div class="v-treeview">
+    <tree-view-node
+      item-children="[]"
+      item-key="key"
+      item-text="text"
+      :item="n"
+      v-for="(n, i) in items"
+      :key="i"
+    />
+  </div>
 </template>
 
 <script lang="ts" setup>
 import { computed, reactive } from "vue";
 import { filterTreeItem, filterTreeItems } from "./helper";
-import { NodeCache, NodeState, TreeViewPropsBase } from "./models";
+import {
+  NodeCache,
+  NodeState,
+  TreeViewNodeItem,
+  TreeViewPropsBase,
+} from "./models";
+import treeViewNode from "./treeViewNode.vue";
 
 interface TreeViewProps extends TreeViewPropsBase {
   active?: any[];
@@ -13,7 +28,7 @@ interface TreeViewProps extends TreeViewPropsBase {
   disabled?: boolean;
   filter?: () => void;
   hoverable?: boolean;
-  items: any[];
+  items: TreeViewNodeItem[];
   multipleActive?: boolean;
   open?: any[];
   openAll?: boolean;

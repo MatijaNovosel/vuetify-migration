@@ -1,15 +1,34 @@
 <template>
-  <div :class="classes" class="v-treeview-node">Node</div>
+  <div :aria-expanded="state.isOpen" :class="classes" class="v-treeview-node">
+    <div class="v-treeview-node__children">
+      <div class="v-treeview-node__root">
+        <div class="v-treeview-node__content">
+          <div class="v-treeview-node__prepend">
+            <slot name="prepend" />
+          </div>
+          <div class="v-treeview-node__label">
+            <template v-if="item.name">
+              {{ item.name }}
+            </template>
+            <slot name="label" v-else />
+          </div>
+          <div class="v-treeview-node__append">
+            <slot name="append" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script lang="ts" setup>
 import { getObjectValueByPath } from "@/utils/helpers";
 import { computed, reactive } from "vue";
-import { TreeViewPropsBase } from "./models";
+import { TreeViewNodeItem, TreeViewPropsBase } from "./models";
 
 interface TreeViewNodeProps extends TreeViewPropsBase {
   level?: number;
-  item?: Object | null;
+  item: TreeViewNodeItem;
   parentIsDisabled?: boolean;
 }
 
@@ -81,7 +100,7 @@ const computedIcon = computed(() => {
   else return props.offIcon;
 });
 
-const hasChildren = computed(() => {
-  return !!children.value && (!!children.value.length || !!props.loadChildren);
-});
+const hasChildren = computed(
+  () => !!children.value && (!!children.value.length || !!props.loadChildren)
+);
 </script>
