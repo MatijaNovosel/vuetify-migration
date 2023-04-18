@@ -54,6 +54,8 @@ interface TreeViewNodeProps extends TreeViewPropsBase {
   parentIsDisabled?: boolean;
 }
 
+const emit = defineEmits(["change"]);
+
 const props = defineProps<TreeViewNodeProps>();
 
 const state = reactive({

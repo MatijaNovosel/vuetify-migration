@@ -1,6 +1,12 @@
 <template>
   <div class="v-treeview">
-    <tree-view-node :level="1" :item="n" v-for="(n, i) in items" :key="i" />
+    <tree-view-node
+      @change="(id: number) => emit('update:modelValue', id)"
+      :level="1"
+      :item="n"
+      v-for="(n, i) in items"
+      :key="i"
+    />
   </div>
 </template>
 
@@ -17,19 +23,16 @@ import "./treeView.sass";
 import treeViewNode from "./treeViewNode.vue";
 
 interface TreeViewProps extends TreeViewPropsBase {
-  active?: any[];
   dense?: boolean;
   disabled?: boolean;
   filter?: () => void;
   hoverable?: boolean;
   items: TreeViewNodeItem[];
-  multipleActive?: boolean;
-  open?: any[];
-  openAll?: boolean;
-  returnObject?: boolean;
   search?: string;
-  value?: any[];
+  modelValue: number[];
 }
+
+const emit = defineEmits(["update:modelValue"]);
 
 const props = defineProps<TreeViewProps>();
 

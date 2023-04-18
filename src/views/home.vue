@@ -56,6 +56,7 @@
         item-children=""
         item-key="key"
         item-text="name"
+        v-model="state.treeViewSelection"
       />
     </div>
     <v-speed-dial bottom right fixed direction="left">
@@ -79,6 +80,7 @@ import { reactive } from "vue";
 const state = reactive({
   date: new Date().toISOString().substring(0, 10),
   time: null,
+  treeViewSelection: [],
   treeViewItems: [
     {
       id: 1,
