@@ -1,6 +1,6 @@
 <template>
-  <div class="d-flex flex-column justify-center items-center h-100 text-center">
-    <div class="d-flex flex-column justify-center mx-auto">
+  <div class="d-flex flex-column justify-center items-center h-100">
+    <div class="d-flex flex-column justify-center mx-auto mt-5">
       <v-checkbox
         hide-details
         color="green"
@@ -82,16 +82,16 @@ const state = reactive({
   treeViewItems: [
     {
       id: 1,
-      name: "Applications :",
+      name: "Applications",
       children: [
-        { id: 2, name: "Calendar : app" },
-        { id: 3, name: "Chrome : app" },
-        { id: 4, name: "Webstorm : app" },
+        { id: 2, name: "Calendar app" },
+        { id: 3, name: "Chrome app" },
+        { id: 4, name: "Webstorm app" },
       ],
     },
     {
       id: 5,
-      name: "Documents :",
+      name: "Documents",
       children: [
         {
           id: 6,
@@ -126,28 +126,28 @@ const state = reactive({
     },
     {
       id: 15,
-      name: "Downloads :",
+      name: "Downloads",
       children: [
-        { id: 16, name: "October : pdf" },
-        { id: 17, name: "November : pdf" },
-        { id: 18, name: "Tutorial : html" },
+        { id: 16, name: "October pdf" },
+        { id: 17, name: "November pdf" },
+        { id: 18, name: "Tutorial html" },
       ],
     },
     {
       id: 19,
-      name: "Videos :",
+      name: "Videos",
       children: [
         {
           id: 20,
-          name: "Tutorials :",
+          name: "Tutorials",
           children: [
-            { id: 21, name: "Basic layouts : mp4" },
-            { id: 22, name: "Advanced techniques : mp4" },
-            { id: 23, name: "All about app : dir" },
+            { id: 21, name: "Basic layouts mp4" },
+            { id: 22, name: "Advanced techniques mp4" },
+            { id: 23, name: "All about app dir" },
           ],
         },
-        { id: 24, name: "Intro : mov" },
-        { id: 25, name: "Conference introduction : avi" },
+        { id: 24, name: "Intro mov" },
+        { id: 25, name: "Conference introduction avi" },
       ],
     },
   ],

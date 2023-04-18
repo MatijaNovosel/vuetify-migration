@@ -5,6 +5,7 @@
         <div class="v-treeview-node__level" v-for="l in level" :key="l" />
         <v-btn
           v-if="hasChildren"
+          size="35"
           variant="flat"
           class="v-treeview-node__toggle"
           icon="mdi-chevron-right"
