@@ -1,14 +1,6 @@
 <template>
   <div class="v-treeview">
-    <tree-view-node
-      :level="1"
-      item-children="[]"
-      item-key="key"
-      item-text="text"
-      :item="n"
-      v-for="(n, i) in items"
-      :key="i"
-    />
+    <tree-view-node :level="1" :item="n" v-for="(n, i) in items" :key="i" />
   </div>
 </template>
 
@@ -57,9 +49,6 @@ const excludedItems = computed(() => {
       props.filter || filterTreeItem,
       props.items[i],
       props.search,
-      props.itemKey,
-      props.itemText,
-      props.itemChildren,
       excluded
     );
   }

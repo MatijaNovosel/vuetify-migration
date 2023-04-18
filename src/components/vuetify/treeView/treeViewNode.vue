@@ -1,6 +1,6 @@
 <template>
   <div :aria-expanded="state.isOpen" :class="classes" class="v-treeview-node">
-    <div class="v-treeview-node__root">
+    <div class="v-treeview-node__root" @click="open">
       <div class="v-treeview-node__content">
         <div class="v-treeview-node__level" v-for="l in level" :key="l" />
         <v-btn
@@ -25,15 +25,12 @@
         </div>
       </div>
     </div>
-    <div class="v-treeview-node__children">
+    <div class="v-treeview-node__children" v-if="state.isOpen">
       <tree-view-node
         v-for="(child, i) in item.children"
         :level="level + 1"
         :key="i"
         :item="child"
-        item-key="key"
-        item-text="text"
-        item-children="[]"
       />
     </div>
   </div>
@@ -80,23 +77,6 @@ const disabled = computed(() => {
   );
 });
 
-const key = computed(() => {
-  return getObjectValueByPath(props.item, props.itemKey);
-});
-
-const text = computed(() => {
-  return getObjectValueByPath(props.item, props.itemText);
-});
-
-const scopedProps = computed(() => ({
-  item: props.item,
-  leaf: !props.item.children,
-  selected: state.isSelected,
-  indeterminate: state.isIndeterminate,
-  active: state.isActive,
-  open: state.isOpen,
-}));
-
 const computedIcon = computed(() => {
   if (state.isIndeterminate) return props.indeterminateIcon;
   else if (state.isSelected) return props.onIcon;
@@ -108,4 +88,10 @@ const hasChildren = computed(
     !!props.item.children &&
     (!!props.item.children.length || !!props.loadChildren)
 );
+
+const open = () => {
+  if (!!props.item.children?.length && !!props.item.children.length) {
+    state.isOpen = !state.isOpen;
+  }
+};
 </script>

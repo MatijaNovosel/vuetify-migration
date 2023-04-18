@@ -14,10 +14,7 @@ export interface TreeViewPropsBase {
   disablePerNode?: boolean;
   expandIcon?: string;
   indeterminateIcon?: string;
-  itemChildren: string;
   itemDisabled?: string;
-  itemKey: string;
-  itemText: string;
   loadChildren?: (item: any) => Promise<void>;
   loadingIcon?: string;
   offIcon?: string;
