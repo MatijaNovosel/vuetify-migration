@@ -25,14 +25,16 @@
         </div>
       </div>
     </div>
-    <div class="v-treeview-node__children" v-if="state.isOpen">
-      <tree-view-node
-        v-for="(child, i) in item.children"
-        :level="level + 1"
-        :key="i"
-        :item="child"
-      />
-    </div>
+    <v-expand-transition>
+      <div class="v-treeview-node__children" v-if="state.isOpen">
+        <tree-view-node
+          v-for="(child, i) in item.children"
+          :level="level + 1"
+          :key="i"
+          :item="child"
+        />
+      </div>
+    </v-expand-transition>
   </div>
 </template>
 
