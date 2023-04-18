@@ -15,6 +15,7 @@
           icon="mdi-chevron-right"
         />
         <div class="v-treeview-node__level" v-else />
+        <v-checkbox-btn density="compact" hide-details />
         <div class="v-treeview-node__prepend">
           <slot name="prepend" />
         </div>
