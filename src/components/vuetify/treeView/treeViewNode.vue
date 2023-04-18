@@ -1,28 +1,36 @@
 <template>
   <div :aria-expanded="state.isOpen" :class="classes" class="v-treeview-node">
-    <div class="v-treeview-node__children">
-      <div class="v-treeview-node__root">
-        <div class="v-treeview-node__content">
-          <v-btn
-            v-if="hasChildren"
-            variant="flat"
-            class="v-treeview-node__toggle"
-            icon="mdi-chevron-right"
-          />
-          <div class="v-treeview-node__prepend">
-            <slot name="prepend" />
-          </div>
-          <div class="v-treeview-node__label">
-            <template v-if="item.name">
-              {{ item.name }}
-            </template>
-            <slot name="label" v-else />
-          </div>
-          <div class="v-treeview-node__append">
-            <slot name="append" />
-          </div>
+    <div class="v-treeview-node__root">
+      <div class="v-treeview-node__content">
+        <v-btn
+          v-if="hasChildren"
+          variant="flat"
+          class="v-treeview-node__toggle"
+          icon="mdi-chevron-right"
+        />
+        <div class="v-treeview-node__prepend">
+          <slot name="prepend" />
+        </div>
+        <div class="v-treeview-node__label">
+          <template v-if="item.name">
+            {{ item.name }}
+          </template>
+          <slot name="label" v-else />
+        </div>
+        <div class="v-treeview-node__append">
+          <slot name="append" />
         </div>
       </div>
+    </div>
+    <div class="v-treeview-node__children">
+      <tree-view-node
+        v-for="(child, i) in item.children"
+        :key="i"
+        :item="child"
+        item-key="key"
+        item-text="text"
+        item-children="[]"
+      />
     </div>
   </div>
 </template>
