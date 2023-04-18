@@ -1,6 +1,7 @@
 <template>
   <div class="v-treeview">
     <tree-view-node
+      :level="1"
       item-children="[]"
       item-key="key"
       item-text="text"

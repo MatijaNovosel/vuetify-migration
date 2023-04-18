@@ -2,12 +2,14 @@
   <div :aria-expanded="state.isOpen" :class="classes" class="v-treeview-node">
     <div class="v-treeview-node__root">
       <div class="v-treeview-node__content">
+        <div class="v-treeview-node__level" v-for="l in level" :key="l" />
         <v-btn
           v-if="hasChildren"
           variant="flat"
           class="v-treeview-node__toggle"
           icon="mdi-chevron-right"
         />
+        <div class="v-treeview-node__level" v-else />
         <div class="v-treeview-node__prepend">
           <slot name="prepend" />
         </div>
@@ -25,6 +27,7 @@
     <div class="v-treeview-node__children">
       <tree-view-node
         v-for="(child, i) in item.children"
+        :level="level + 1"
         :key="i"
         :item="child"
         item-key="key"
@@ -42,7 +45,7 @@ import { TreeViewNodeItem, TreeViewPropsBase } from "./models";
 import "./treeView.sass";
 
 interface TreeViewNodeProps extends TreeViewPropsBase {
-  level?: number;
+  level: number;
   item: TreeViewNodeItem;
   parentIsDisabled?: boolean;
 }
