@@ -1,5 +1,9 @@
 <template>
-  <div :aria-expanded="state.isOpen" :class="classes" class="v-treeview-node">
+  <div
+    :aria-expanded="state.isOpen"
+    :class="classes"
+    class="v-treeview-node v-treeview-node--click"
+  >
     <div class="v-treeview-node__root" @click="open">
       <div class="v-treeview-node__content">
         <div class="v-treeview-node__level" v-for="l in level" :key="l" />
@@ -86,9 +90,7 @@ const computedIcon = computed(() => {
 });
 
 const hasChildren = computed(
-  () =>
-    !!props.item.children &&
-    (!!props.item.children.length || !!props.loadChildren)
+  () => !!props.item.children && !!props.item.children.length
 );
 
 const open = () => {

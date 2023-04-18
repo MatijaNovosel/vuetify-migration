@@ -15,7 +15,6 @@ export interface TreeViewPropsBase {
   expandIcon?: string;
   indeterminateIcon?: string;
   itemDisabled?: string;
-  loadChildren?: (item: any) => Promise<void>;
   loadingIcon?: string;
   offIcon?: string;
   onIcon?: string;
