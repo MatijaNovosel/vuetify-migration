@@ -50,9 +50,7 @@
         color="green lighten-1"
         v-model="state.date"
       />
-      <v-time-picker automatic use-seconds v-model="state.time" class="ml-5" />
-    </div>
-    <div class="mt-5 d-flex justify-center">
+      <v-time-picker automatic use-seconds v-model="state.time" class="mx-5" />
       <v-tree-view
         :items="state.treeViewItems"
         item-children=""

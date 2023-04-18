@@ -3,6 +3,12 @@
     <div class="v-treeview-node__children">
       <div class="v-treeview-node__root">
         <div class="v-treeview-node__content">
+          <v-btn
+            v-if="hasChildren"
+            variant="flat"
+            class="v-treeview-node__toggle"
+            icon="mdi-chevron-right"
+          />
           <div class="v-treeview-node__prepend">
             <slot name="prepend" />
           </div>
@@ -25,6 +31,7 @@
 import { getObjectValueByPath } from "@/utils/helpers";
 import { computed, reactive } from "vue";
 import { TreeViewNodeItem, TreeViewPropsBase } from "./models";
+import "./treeView.sass";
 
 interface TreeViewNodeProps extends TreeViewPropsBase {
   level?: number;
@@ -65,34 +72,18 @@ const key = computed(() => {
   return getObjectValueByPath(props.item, props.itemKey);
 });
 
-const children = computed(() => {
-  const children = getObjectValueByPath(props.item, props.itemChildren);
-  /*
-  return (
-    children &&
-    children.filter(
-      (child: any) =>
-        !this.treeview.isExcluded(getObjectValueByPath(child, props.itemKey))
-    )
-  );
-  */
-  return [];
-});
-
 const text = computed(() => {
   return getObjectValueByPath(props.item, props.itemText);
 });
 
-const scopedProps = computed(() => {
-  return {
-    item: props.item,
-    leaf: !children.value,
-    selected: state.isSelected,
-    indeterminate: state.isIndeterminate,
-    active: state.isActive,
-    open: state.isOpen,
-  };
-});
+const scopedProps = computed(() => ({
+  item: props.item,
+  leaf: !props.item.children,
+  selected: state.isSelected,
+  indeterminate: state.isIndeterminate,
+  active: state.isActive,
+  open: state.isOpen,
+}));
 
 const computedIcon = computed(() => {
   if (state.isIndeterminate) return props.indeterminateIcon;
@@ -101,6 +92,8 @@ const computedIcon = computed(() => {
 });
 
 const hasChildren = computed(
-  () => !!children.value && (!!children.value.length || !!props.loadChildren)
+  () =>
+    !!props.item.children &&
+    (!!props.item.children.length || !!props.loadChildren)
 );
 </script>

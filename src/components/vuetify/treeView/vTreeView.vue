@@ -20,6 +20,7 @@ import {
   TreeViewNodeItem,
   TreeViewPropsBase,
 } from "./models";
+import "./treeView.sass";
 import treeViewNode from "./treeViewNode.vue";
 
 interface TreeViewProps extends TreeViewPropsBase {

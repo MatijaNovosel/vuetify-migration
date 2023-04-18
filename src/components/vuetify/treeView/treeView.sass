@@ -1,5 +1,5 @@
 @import './variables.scss'
-@import './mixins.scss'
+@import './mixins.sass'
 
 .v-treeview-node
   &.v-treeview-node--shaped
@@ -35,7 +35,7 @@
     position: absolute
     right: 0
     top: 0
-    transition: $primary-transition
+    transition: 0.3s cubic-bezier(0.25, 0.8, 0.5, 1)
 
   // Fix for IE11 where min-height does not work with
   // align-items: center in flex containers
