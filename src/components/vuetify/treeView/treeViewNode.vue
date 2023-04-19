@@ -19,6 +19,7 @@
           density="compact"
           hide-details
           readonly
+          :color="color"
           :model-value="isSelected"
           @click.stop="selectNode"
         />
@@ -43,6 +44,7 @@
           :level="level + 1"
           :key="child.id"
           :item="child"
+          :color="color"
         />
       </div>
     </v-expand-transition>
@@ -67,6 +69,7 @@ const props = defineProps<{
   level: number;
   item: TreeViewNodeItem;
   parentIsDisabled?: boolean;
+  color?: string;
 }>();
 
 const state = reactive({

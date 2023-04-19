@@ -1,6 +1,7 @@
 <template>
   <div class="v-treeview" :class="classes">
     <tree-view-node
+      :color="props.color || 'accent'"
       :level="1"
       :item="item"
       v-for="item in items"
@@ -11,7 +12,7 @@
 
 <script lang="ts" setup>
 import { useEventBus } from "@vueuse/core";
-import { computed, onUnmounted, provide, reactive } from "vue";
+import { computed, onUnmounted, provide, reactive, watch } from "vue";
 import { filterTreeItem, filterTreeItems } from "./helper";
 import { TreeViewNodeItem } from "./models";
 import "./treeView.sass";
@@ -26,6 +27,7 @@ const props = defineProps<{
   hoverable?: boolean;
   items: TreeViewNodeItem[];
   search?: string;
+  color?: string;
   modelValue: number[];
 }>();
 
@@ -77,6 +79,14 @@ const classes = computed(() => ({
   "v-treeview--hoverable": props.hoverable,
   "v-treeview--dense": props.dense,
 }));
+
+watch(
+  () => state.selectedNodes,
+  (val) => emit("update:modelValue", [...val]),
+  {
+    deep: true,
+  }
+);
 
 onUnmounted(() => {
   unsubscribeSelectedNode();

@@ -52,6 +52,7 @@
       />
       <v-time-picker automatic use-seconds v-model="state.time" class="mx-5" />
       <v-tree-view
+        color="primary"
         :items="state.treeViewItems"
         hoverable
         v-model="state.treeViewSelection"
