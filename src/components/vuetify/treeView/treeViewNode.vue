@@ -12,7 +12,7 @@
           size="35"
           variant="flat"
           class="v-treeview-node__toggle"
-          icon="mdi-chevron-right"
+          :icon="state.isOpen ? 'mdi-chevron-down' : 'mdi-chevron-right'"
         />
         <div class="v-treeview-node__level" v-else />
         <v-checkbox-btn density="compact" hide-details />
