@@ -70,7 +70,6 @@ const handleSelectNode = (id: number) => {
     for (const node of props.items) {
       const n = findNode(id, node);
       if (n) {
-        console.log(isSelectedAlready);
         applyToAllChildren(n, isSelectedAlready ? unselectNode : selectNode);
         break;
       }
