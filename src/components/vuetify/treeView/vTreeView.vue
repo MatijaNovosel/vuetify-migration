@@ -12,7 +12,14 @@
 
 <script lang="ts" setup>
 import { useEventBus } from "@vueuse/core";
-import { computed, onUnmounted, provide, reactive, watch } from "vue";
+import {
+  computed,
+  onMounted,
+  onUnmounted,
+  provide,
+  reactive,
+  watch,
+} from "vue";
 import { findNode } from "./helper";
 import { TreeViewNodeItem, TreeViewSelectionMode } from "./models";
 import "./treeView.sass";
@@ -25,6 +32,7 @@ const props = defineProps<{
   disabled?: boolean;
   filter?: () => void;
   hoverable?: boolean;
+  openAll?: boolean;
   search?: string;
   color?: string;
   modelValue: number[];
@@ -35,13 +43,9 @@ const props = defineProps<{
 const busSelectNode = useEventBus<number>("select-node");
 const busOpenNode = useEventBus<number>("open-node");
 
-const unselectNode = (id: number) => {
-  state.selectedNodes.delete(id);
-};
+const unselectNode = (id: number) => state.selectedNodes.delete(id);
 
-const selectNode = (id: number) => {
-  state.selectedNodes.add(id);
-};
+const selectNode = (id: number) => state.selectedNodes.add(id);
 
 const toggleNode = (id: number) => {
   if (state.selectedNodes.has(id)) {
@@ -49,6 +53,16 @@ const toggleNode = (id: number) => {
     return;
   }
   selectNode(id);
+};
+
+const gatherAllNodeIds = (currentNode: TreeViewNodeItem, res: number[]) => {
+  if (currentNode.children) {
+    for (const child of currentNode.children) {
+      res = [...res, child.id];
+      if (child.children) res = [...res, ...gatherAllNodeIds(child, res)];
+    }
+  }
+  return [...res, currentNode.id];
 };
 
 const applyToAllChildren = (
@@ -111,6 +125,17 @@ watch(
     deep: true,
   }
 );
+
+onMounted(() => {
+  if (props.openAll === true) {
+    let allVals: number[] = [];
+    for (const node of props.items) {
+      let x = gatherAllNodeIds(node, []);
+      allVals = [...allVals, ...x];
+    }
+    for (const n of [...new Set(allVals)]) state.openedNodes.add(n);
+  }
+});
 
 onUnmounted(() => {
   unsubscribeSelectedNode();

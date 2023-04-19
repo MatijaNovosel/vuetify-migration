@@ -22,7 +22,7 @@
           readonly
           :color="color"
           :model-value="isSelected"
-          @click.stop="selectNode"
+          @click.stop="emitNodeSelect(item.id)"
         />
         <div class="v-treeview-node__prepend">
           <slot name="prepend" />
@@ -156,12 +156,8 @@ const nodeIcon = computed(() => {
   return "mdi-checkbox-marked";
 });
 
-const selectNode = () => {
-  emitNodeSelect(props.item.id);
-};
-
 const openNode = () => {
-  if (!!props.item.children?.length && !!props.item.children.length) {
+  if (!!props.item.children && !!props.item.children.length) {
     emitNodeOpen(props.item.id);
   }
 };

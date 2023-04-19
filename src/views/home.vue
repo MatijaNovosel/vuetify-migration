@@ -58,6 +58,7 @@
         hoverable
         v-model="state.treeViewSelection"
         dense
+        open-all
       />
     </div>
     <v-speed-dial bottom right fixed direction="left">
