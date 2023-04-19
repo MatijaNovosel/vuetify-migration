@@ -16,6 +16,13 @@
         />
         <div class="v-treeview-node__level" v-else />
         <v-checkbox-btn
+          :true-icon="
+            item.children
+              ? isIndeterminate
+                ? 'mdi-minus-box'
+                : 'mdi-checkbox-marked'
+              : 'mdi-checkbox-marked'
+          "
           density="compact"
           hide-details
           readonly
@@ -53,17 +60,17 @@
 
 <script lang="ts" setup>
 import { useEventBus } from "@vueuse/core";
-import { computed, inject, reactive, watch } from "vue";
+import { computed, inject } from "vue";
+import { findNode } from "./helper";
 import { TreeViewNodeItem } from "./models";
 import "./treeView.sass";
-
-const emit = defineEmits(["change"]);
 
 const { emit: emitNodeSelect } = useEventBus<number>("select-node");
 const { emit: emitNodeOpen } = useEventBus<number>("open-node");
 
 const selectedNodes = inject<Set<number>>("selected-nodes");
 const openedNodes = inject<Set<number>>("opened-nodes");
+const nodes = inject<TreeViewNodeItem[]>("nodes");
 
 const props = defineProps<{
   level: number;
@@ -72,25 +79,46 @@ const props = defineProps<{
   color?: string;
 }>();
 
-const state = reactive({
-  hasLoaded: false,
-  isActive: false,
-  isIndeterminate: false,
-  isLoading: false,
-  isSelected: false,
-});
+const checkAllChildrenSelected = (
+  currentNode: TreeViewNodeItem,
+  status: boolean
+): boolean => {
+  if (currentNode.children) {
+    for (const child of currentNode.children) {
+      if (child.children) {
+        return (
+          selectedNodes!.has(child.id) &&
+          checkAllChildrenSelected(child, status)
+        );
+      }
+    }
+  }
+  return selectedNodes!.has(currentNode.id);
+};
 
 const classes = computed(() => ({
   "v-treeview-node--leaf": !hasChildren.value,
-  "v-treeview-node--selected": state.isSelected,
 }));
 
 const isOpen = computed(() => openedNodes?.has(props.item.id));
+
 const isSelected = computed(() => selectedNodes?.has(props.item.id));
 
+const isIndeterminate = computed(() => {
+  for (const node of nodes!) {
+    const n = findNode(props.item.id, node);
+    if (n) {
+      const allSelected = checkAllChildrenSelected(n, true);
+      console.log(allSelected, props.item.id);
+      return allSelected;
+    }
+  }
+  return false;
+});
+
 const computedIcon = computed(() => {
-  if (state.isIndeterminate) return "mdi-account";
-  else if (state.isSelected) return "mdi-account";
+  if (isIndeterminate.value) return "mdi-account";
+  else if (isSelected.value) return "mdi-account";
   else return "mdi-account";
 });
 
@@ -107,11 +135,4 @@ const openNode = () => {
     emitNodeOpen(props.item.id);
   }
 };
-
-watch(
-  () => state.isSelected,
-  (val) => {
-    emit("change", val);
-  }
-);
 </script>

@@ -97,6 +97,7 @@ const state = reactive({
 
 provide("selected-nodes", state.selectedNodes);
 provide("opened-nodes", state.openedNodes);
+provide("nodes", props.items);
 
 const classes = computed(() => ({
   "v-treeview--hoverable": props.hoverable,
