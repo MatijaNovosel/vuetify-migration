@@ -20,7 +20,7 @@
           hide-details
           readonly
           :model-value="isSelected"
-          @click="selectNode"
+          @click.stop="selectNode"
         />
         <div class="v-treeview-node__prepend">
           <slot name="prepend" />
