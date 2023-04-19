@@ -1,5 +1,5 @@
 import { getObjectValueByPath } from "@/utils/helpers";
-import { TreeViewNodeCacheItem } from "./models";
+import { TreeViewNodeItem } from "./models";
 
 export function filterTreeItem(
   item: object,
@@ -31,8 +31,8 @@ export function filterTreeItems(
 
 export function findNode(
   id: number,
-  currentNode: TreeViewNodeCacheItem
-): TreeViewNodeCacheItem | null {
+  currentNode: TreeViewNodeItem
+): TreeViewNodeItem | null {
   let i, currentChild, result;
   if (id == currentNode.id) {
     return currentNode;
