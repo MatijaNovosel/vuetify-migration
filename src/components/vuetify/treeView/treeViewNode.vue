@@ -19,7 +19,7 @@
           density="compact"
           hide-details
           readonly
-          :model-value="isSelected"
+          :model-value="props.item.isOpen"
           @click="selectNode"
         />
         <div class="v-treeview-node__prepend">
@@ -51,8 +51,7 @@
 
 <script lang="ts" setup>
 import { Ref, computed, inject, reactive, watch } from "vue";
-import { findNode } from "./helper";
-import { TreeViewNodeCacheItem, TreeViewNodeItem } from "./models";
+import { TreeViewNodeCacheItem } from "./models";
 import "./treeView.sass";
 
 const treeViewNodeCacheProvider = inject<Ref<TreeViewNodeCacheItem[]>>(
@@ -63,7 +62,7 @@ const emit = defineEmits(["change"]);
 
 const props = defineProps<{
   level: number;
-  item: TreeViewNodeItem;
+  item: TreeViewNodeCacheItem;
   parentIsDisabled?: boolean;
 }>();
 
@@ -98,23 +97,8 @@ const open = () => {
 };
 
 const selectNode = () => {
-  if (treeViewNodeCacheProvider?.value) {
-    for (const n of treeViewNodeCacheProvider.value) {
-      const node = findNode(props.item.id, n);
-      if (node !== null) {
-        node.isOpen = true;
-      }
-    }
-  }
+  props.item.isOpen = true;
 };
-
-const isSelected = computed(() => {
-  if (treeViewNodeCacheProvider?.value) {
-    return treeViewNodeCacheProvider.value.find((n) => n.id === props.item.id)
-      ?.isOpen;
-  }
-  return false;
-});
 
 watch(
   () => state.isSelected,

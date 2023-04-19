@@ -3,14 +3,14 @@
     <tree-view-node
       :level="1"
       :item="item"
-      v-for="item in items"
+      v-for="item in state.items"
       :key="item.id"
     />
   </div>
 </template>
 
 <script lang="ts" setup>
-import { Ref, computed, provide, ref } from "vue";
+import { computed, reactive } from "vue";
 import { filterTreeItem, filterTreeItems } from "./helper";
 import { TreeViewNodeCacheItem, TreeViewNodeItem } from "./models";
 import "./treeView.sass";
@@ -27,17 +27,12 @@ const props = defineProps<{
   modelValue: number[];
 }>();
 
-const treeViewNodeCache = ref<TreeViewNodeCacheItem[]>(
-  props.items.map((n) => ({
+const state = reactive({
+  items: props.items.map((n) => ({
     ...n,
     isOpen: false,
-  }))
-);
-
-const treeViewNodeCacheProvider = provide<Ref<TreeViewNodeCacheItem[]>>(
-  "tree-view-node-cache",
-  treeViewNodeCache
-);
+  })) as TreeViewNodeCacheItem[],
+});
 
 const excludedItems = computed(() => {
   const excluded = new Set<string | number>();

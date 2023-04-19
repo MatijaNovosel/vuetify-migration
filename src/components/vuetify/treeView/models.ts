@@ -9,6 +9,7 @@ export interface TreeViewNodeItem {
 
 export interface TreeViewNodeCacheItem extends TreeViewNodeItem {
   isOpen: boolean;
+  children?: TreeViewNodeCacheItem[];
 }
 
 export interface NodeState {
