@@ -105,15 +105,16 @@ const isOpen = computed(() => openedNodes?.has(props.item.id));
 const isSelected = computed(() => selectedNodes?.has(props.item.id));
 
 const isIndeterminate = computed(() => {
+  let res = true;
   for (const node of nodes!) {
     const n = findNode(props.item.id, node);
     if (n) {
-      const allSelected = checkAllChildrenSelected(n, true);
+      const allSelected = checkAllChildrenSelected(n, false);
       console.log(allSelected, props.item.id);
-      return allSelected;
+      res = allSelected;
     }
   }
-  return false;
+  return res;
 });
 
 const hasChildren = computed(
