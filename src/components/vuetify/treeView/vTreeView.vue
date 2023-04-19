@@ -3,16 +3,17 @@
     <tree-view-node
       :level="1"
       :item="item"
-      v-for="item in state.items"
+      v-for="item in items"
       :key="item.id"
     />
   </div>
 </template>
 
 <script lang="ts" setup>
-import { computed, reactive } from "vue";
+import { useEventBus } from "@vueuse/core";
+import { computed, onUnmounted, provide, reactive } from "vue";
 import { filterTreeItem, filterTreeItems } from "./helper";
-import { TreeViewNodeCacheItem, TreeViewNodeItem } from "./models";
+import { TreeViewNodeItem } from "./models";
 import "./treeView.sass";
 import treeViewNode from "./treeViewNode.vue";
 
@@ -28,12 +29,35 @@ const props = defineProps<{
   modelValue: number[];
 }>();
 
+const busSelectNode = useEventBus<number>("select-node");
+const busOpenNode = useEventBus<number>("open-node");
+
+const selectNode = (id: number) => {
+  if (state.selectedNodes.has(id)) {
+    state.selectedNodes.delete(id);
+    return;
+  }
+  state.selectedNodes.add(id);
+};
+
+const openNode = (id: number) => {
+  if (state.openedNodes.has(id)) {
+    state.openedNodes.delete(id);
+    return;
+  }
+  state.openedNodes.add(id);
+};
+
+const unsubscribeSelectedNode = busSelectNode.on(selectNode);
+const unsubscribeOpenNode = busOpenNode.on(openNode);
+
 const state = reactive({
-  items: props.items.map((n) => ({
-    ...n,
-    isOpen: false,
-  })) as TreeViewNodeCacheItem[],
+  selectedNodes: new Set<number>(),
+  openedNodes: new Set<number>(),
 });
+
+provide("selected-nodes", state.selectedNodes);
+provide("opened-nodes", state.openedNodes);
 
 const excludedItems = computed(() => {
   const excluded = new Set<string | number>();
@@ -53,4 +77,9 @@ const classes = computed(() => ({
   "v-treeview--hoverable": props.hoverable,
   "v-treeview--dense": props.dense,
 }));
+
+onUnmounted(() => {
+  unsubscribeSelectedNode();
+  unsubscribeOpenNode();
+});
 </script>
