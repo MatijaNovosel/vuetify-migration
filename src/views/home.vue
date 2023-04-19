@@ -53,10 +53,9 @@
       <v-time-picker automatic use-seconds v-model="state.time" class="mx-5" />
       <v-tree-view
         :items="state.treeViewItems"
-        item-children=""
-        item-key="key"
-        item-text="name"
+        hoverable
         v-model="state.treeViewSelection"
+        dense
       />
     </div>
     <v-speed-dial bottom right fixed direction="left">

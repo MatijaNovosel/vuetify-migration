@@ -1,4 +1,5 @@
 import { getObjectValueByPath } from "@/utils/helpers";
+import { TreeViewNodeCacheItem } from "./models";
 
 export function filterTreeItem(
   item: object,
@@ -26,4 +27,23 @@ export function filterTreeItems(
   }
   excluded.add(getObjectValueByPath(item, "id"));
   return false;
+}
+
+export function findNode(
+  id: number,
+  currentNode: TreeViewNodeCacheItem
+): TreeViewNodeCacheItem | null {
+  let i, currentChild, result;
+  if (id == currentNode.id) {
+    return currentNode;
+  } else {
+    if (currentNode.children) {
+      for (i = 0; i < currentNode.children.length; i += 1) {
+        currentChild = currentNode.children[i];
+        result = findNode(id, currentChild);
+        if (result !== null) return result;
+      }
+    }
+    return null;
+  }
 }

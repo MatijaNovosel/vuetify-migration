@@ -1,28 +1,23 @@
 <template>
-  <div class="v-treeview">
+  <div class="v-treeview" :class="classes">
     <tree-view-node
-      @change="(id: number) => emit('update:modelValue', id)"
       :level="1"
-      :item="n"
-      v-for="(n, i) in items"
-      :key="i"
+      :item="item"
+      v-for="item in items"
+      :key="item.id"
     />
   </div>
 </template>
 
 <script lang="ts" setup>
-import { computed, reactive } from "vue";
+import { Ref, computed, provide, ref } from "vue";
 import { filterTreeItem, filterTreeItems } from "./helper";
-import {
-  NodeCache,
-  NodeState,
-  TreeViewNodeItem,
-  TreeViewPropsBase,
-} from "./models";
+import { TreeViewNodeCacheItem, TreeViewNodeItem } from "./models";
 import "./treeView.sass";
 import treeViewNode from "./treeViewNode.vue";
 
-interface TreeViewProps extends TreeViewPropsBase {
+const emit = defineEmits(["update:modelValue"]);
+const props = defineProps<{
   dense?: boolean;
   disabled?: boolean;
   filter?: () => void;
@@ -30,19 +25,19 @@ interface TreeViewProps extends TreeViewPropsBase {
   items: TreeViewNodeItem[];
   search?: string;
   modelValue: number[];
-}
+}>();
 
-const emit = defineEmits(["update:modelValue"]);
+const treeViewNodeCache = ref<TreeViewNodeCacheItem[]>(
+  props.items.map((n) => ({
+    ...n,
+    isOpen: false,
+  }))
+);
 
-const props = defineProps<TreeViewProps>();
-
-const state = reactive({
-  level: -1,
-  activeCache: new Set() as NodeCache,
-  nodes: {} as Record<string | number, NodeState>,
-  openCache: new Set() as NodeCache,
-  selectedCache: new Set() as NodeCache,
-});
+const treeViewNodeCacheProvider = provide<Ref<TreeViewNodeCacheItem[]>>(
+  "tree-view-node-cache",
+  treeViewNodeCache
+);
 
 const excludedItems = computed(() => {
   const excluded = new Set<string | number>();

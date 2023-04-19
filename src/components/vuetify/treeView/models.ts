@@ -7,24 +7,8 @@ export interface TreeViewNodeItem {
   children?: TreeViewNodeItem[];
 }
 
-export interface TreeViewPropsBase {
-  activatable?: boolean;
-  activeClass?: string;
-  color?: string;
-  disablePerNode?: boolean;
-  expandIcon?: string;
-  indeterminateIcon?: string;
-  itemDisabled?: string;
-  loadingIcon?: string;
-  offIcon?: string;
-  onIcon?: string;
-  openOnClick?: boolean;
-  rounded?: boolean;
-  selectable?: boolean;
-  selectedColor?: string;
-  shaped?: boolean;
-  transition?: boolean;
-  selectionType?: "leaf" | "independent";
+export interface TreeViewNodeCacheItem extends TreeViewNodeItem {
+  isOpen: boolean;
 }
 
 export interface NodeState {
