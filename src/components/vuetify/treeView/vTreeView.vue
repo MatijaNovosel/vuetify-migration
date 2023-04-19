@@ -17,6 +17,7 @@ import "./treeView.sass";
 import treeViewNode from "./treeViewNode.vue";
 
 const emit = defineEmits(["update:modelValue"]);
+
 const props = defineProps<{
   dense?: boolean;
   disabled?: boolean;
