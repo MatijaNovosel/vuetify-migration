@@ -16,13 +16,7 @@
         />
         <div class="v-treeview-node__level" v-else />
         <v-checkbox-btn
-          :true-icon="
-            item.children
-              ? isIndeterminate
-                ? 'mdi-minus-box'
-                : 'mdi-checkbox-marked'
-              : 'mdi-checkbox-marked'
-          "
+          :true-icon="nodeIcon"
           density="compact"
           hide-details
           readonly
@@ -86,14 +80,35 @@ const checkAllChildrenSelected = (
   if (currentNode.children) {
     for (const child of currentNode.children) {
       if (child.children) {
-        return (
+        status =
+          status &&
           selectedNodes!.has(child.id) &&
-          checkAllChildrenSelected(child, status)
-        );
+          checkAllChildrenSelected(child, status);
+      } else {
+        status = status && selectedNodes!.has(child.id);
       }
     }
   }
-  return selectedNodes!.has(currentNode.id);
+  return status && selectedNodes!.has(currentNode.id);
+};
+
+const checkAtLeastOneChildSelected = (
+  currentNode: TreeViewNodeItem,
+  status: boolean
+): boolean => {
+  if (currentNode.children) {
+    for (const child of currentNode.children) {
+      if (child.children) {
+        status =
+          status ||
+          selectedNodes!.has(child.id) ||
+          checkAtLeastOneChildSelected(child, status);
+      } else {
+        status = status || selectedNodes!.has(child.id);
+      }
+    }
+  }
+  return status || selectedNodes!.has(currentNode.id);
 };
 
 const classes = computed(() => ({
@@ -104,14 +119,25 @@ const isOpen = computed(() => openedNodes?.has(props.item.id));
 
 const isSelected = computed(() => selectedNodes?.has(props.item.id));
 
-const isIndeterminate = computed(() => {
+const allChildrenSelected = computed(() => {
   let res = true;
   for (const node of nodes!) {
     const n = findNode(props.item.id, node);
     if (n) {
-      const allSelected = checkAllChildrenSelected(n, false);
-      console.log(allSelected, props.item.id);
+      const allSelected = checkAllChildrenSelected(n, true);
       res = allSelected;
+    }
+  }
+  return res;
+});
+
+const atLeastOneChildSelected = computed(() => {
+  let res = true;
+  for (const node of nodes!) {
+    const n = findNode(props.item.id, node);
+    if (n) {
+      const atLeastOneSelected = checkAtLeastOneChildSelected(n, false);
+      res = atLeastOneSelected;
     }
   }
   return res;
@@ -120,6 +146,15 @@ const isIndeterminate = computed(() => {
 const hasChildren = computed(
   () => !!props.item.children && !!props.item.children.length
 );
+
+const nodeIcon = computed(() => {
+  if (props.item.children) {
+    if (allChildrenSelected.value) return "mdi-checkbox-marked";
+    if (atLeastOneChildSelected.value) return "mdi-minus-box";
+    return undefined;
+  }
+  return "mdi-checkbox-marked";
+});
 
 const selectNode = () => {
   emitNodeSelect(props.item.id);
