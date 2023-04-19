@@ -50,13 +50,9 @@
 </template>
 
 <script lang="ts" setup>
-import { Ref, computed, inject, reactive, watch } from "vue";
+import { computed, reactive, watch } from "vue";
 import { TreeViewNodeCacheItem } from "./models";
 import "./treeView.sass";
-
-const treeViewNodeCacheProvider = inject<Ref<TreeViewNodeCacheItem[]>>(
-  "tree-view-node-cache"
-);
 
 const emit = defineEmits(["change"]);
 
