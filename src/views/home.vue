@@ -54,6 +54,7 @@
       <v-tree-view
         color="primary"
         :items="state.treeViewItems"
+        selection-mode="leaf"
         hoverable
         v-model="state.treeViewSelection"
         dense

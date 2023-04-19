@@ -1,5 +1,4 @@
-export type NodeCache = Set<string | number>;
-export type NodeArray = (string | number)[];
+export type TreeViewSelectionMode = "independent" | "leaf";
 
 export interface TreeViewNodeItem {
   id: number;

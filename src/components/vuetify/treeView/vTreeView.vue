@@ -1,10 +1,10 @@
 <template>
   <div class="v-treeview" :class="classes">
     <tree-view-node
+      v-for="item in items"
       :color="props.color || 'accent'"
       :level="1"
       :item="item"
-      v-for="item in items"
       :key="item.id"
     />
   </div>
@@ -13,8 +13,8 @@
 <script lang="ts" setup>
 import { useEventBus } from "@vueuse/core";
 import { computed, onUnmounted, provide, reactive, watch } from "vue";
-import { filterTreeItem, filterTreeItems } from "./helper";
-import { TreeViewNodeItem } from "./models";
+import { findNode } from "./helper";
+import { TreeViewNodeItem, TreeViewSelectionMode } from "./models";
 import "./treeView.sass";
 import treeViewNode from "./treeViewNode.vue";
 
@@ -25,21 +25,59 @@ const props = defineProps<{
   disabled?: boolean;
   filter?: () => void;
   hoverable?: boolean;
-  items: TreeViewNodeItem[];
   search?: string;
   color?: string;
   modelValue: number[];
+  items: TreeViewNodeItem[];
+  selectionMode: TreeViewSelectionMode;
 }>();
 
 const busSelectNode = useEventBus<number>("select-node");
 const busOpenNode = useEventBus<number>("open-node");
 
+const unselectNode = (id: number) => {
+  state.selectedNodes.delete(id);
+};
+
 const selectNode = (id: number) => {
+  state.selectedNodes.add(id);
+};
+
+const toggleNode = (id: number) => {
   if (state.selectedNodes.has(id)) {
-    state.selectedNodes.delete(id);
+    unselectNode(id);
     return;
   }
-  state.selectedNodes.add(id);
+  selectNode(id);
+};
+
+const applyToAllChildren = (
+  currentNode: TreeViewNodeItem,
+  fn: (id: number) => void
+) => {
+  if (currentNode.children) {
+    for (const child of currentNode.children) {
+      fn(child.id);
+      if (child.children) applyToAllChildren(child, fn);
+    }
+  }
+};
+
+const handleSelectNode = (id: number) => {
+  if (props.selectionMode === "leaf") {
+    const isSelectedAlready = state.selectedNodes.has(id);
+    toggleNode(id);
+    for (const node of props.items) {
+      const n = findNode(id, node);
+      if (n) {
+        console.log(isSelectedAlready);
+        applyToAllChildren(n, isSelectedAlready ? unselectNode : selectNode);
+        break;
+      }
+    }
+  } else {
+    toggleNode(id);
+  }
 };
 
 const openNode = (id: number) => {
@@ -50,7 +88,7 @@ const openNode = (id: number) => {
   state.openedNodes.add(id);
 };
 
-const unsubscribeSelectedNode = busSelectNode.on(selectNode);
+const unsubscribeSelectedNode = busSelectNode.on(handleSelectNode);
 const unsubscribeOpenNode = busOpenNode.on(openNode);
 
 const state = reactive({
@@ -60,20 +98,6 @@ const state = reactive({
 
 provide("selected-nodes", state.selectedNodes);
 provide("opened-nodes", state.openedNodes);
-
-const excludedItems = computed(() => {
-  const excluded = new Set<string | number>();
-  if (!props.search) return excluded;
-  for (let i = 0; i < props.items.length; i++) {
-    filterTreeItems(
-      props.filter || filterTreeItem,
-      props.items[i],
-      props.search,
-      excluded
-    );
-  }
-  return excluded;
-});
 
 const classes = computed(() => ({
   "v-treeview--hoverable": props.hoverable,
