@@ -116,12 +116,6 @@ const isIndeterminate = computed(() => {
   return false;
 });
 
-const computedIcon = computed(() => {
-  if (isIndeterminate.value) return "mdi-account";
-  else if (isSelected.value) return "mdi-account";
-  else return "mdi-account";
-});
-
 const hasChildren = computed(
   () => !!props.item.children && !!props.item.children.length
 );
