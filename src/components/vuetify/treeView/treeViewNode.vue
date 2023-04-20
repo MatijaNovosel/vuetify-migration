@@ -150,7 +150,7 @@ const nodeIcon = computed(() => {
   return "mdi-checkbox-marked";
 });
 
-const onNodeChanged = (id: number) => {
+const onNodeChanged = () => {
   // Check if all children selected
   if (hasChildren.value) {
     if (checkChildSelectStatus("all")) {
@@ -159,7 +159,9 @@ const onNodeChanged = (id: number) => {
       }
     } else {
       if (!checkChildSelectStatus("atLeastOne")) {
-        nodeSelected();
+        if (selectedNodes!.has(props.item.id)) {
+          nodeSelected();
+        }
       }
     }
   }

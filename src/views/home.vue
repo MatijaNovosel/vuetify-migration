@@ -41,6 +41,14 @@
         readonly
         v-model="state.completion.treeView"
       />
+      <span class="mt-8">
+        <v-icon color="green" icon="mdi-leaf" class="mr-3" />
+        <code>
+          {{
+            state.treeViewSelection.length ? state.treeViewSelection : "None"
+          }}
+        </code>
+      </span>
     </div>
     <div class="mt-5 d-flex justify-center">
       <v-date-picker
@@ -86,42 +94,42 @@ const state = reactive({
   treeViewItems: [
     {
       id: 1,
-      name: "Applications",
+      name: "ID 1",
       children: [
-        { id: 2, name: "Calendar app" },
-        { id: 3, name: "Chrome app" },
-        { id: 4, name: "Webstorm app" },
+        { id: 2, name: "ID 2" },
+        { id: 3, name: "ID 3" },
+        { id: 4, name: "ID 4" },
       ],
     },
     {
       id: 5,
-      name: "Documents",
+      name: "ID 5",
       children: [
         {
           id: 6,
-          name: "vuetify",
+          name: "ID 6",
           children: [
             {
               id: 7,
-              name: "src",
+              name: "ID 7",
               children: [
-                { id: 8, name: "index ts" },
-                { id: 9, name: "bootstrap ts" },
+                { id: 8, name: "ID 8" },
+                { id: 9, name: "ID 9" },
               ],
             },
           ],
         },
         {
           id: 10,
-          name: "material2",
+          name: "ID 10",
           children: [
             {
               id: 11,
-              name: "src",
+              name: "ID 11",
               children: [
-                { id: 12, name: "v-btn ts" },
-                { id: 13, name: "v-card ts" },
-                { id: 14, name: "v-window ts" },
+                { id: 12, name: "ID 12" },
+                { id: 13, name: "ID 13" },
+                { id: 14, name: "ID 14" },
               ],
             },
           ],
@@ -130,28 +138,28 @@ const state = reactive({
     },
     {
       id: 15,
-      name: "Downloads",
+      name: "ID 15",
       children: [
-        { id: 16, name: "October pdf" },
-        { id: 17, name: "November pdf" },
-        { id: 18, name: "Tutorial html" },
+        { id: 16, name: "ID 16" },
+        { id: 17, name: "ID 17" },
+        { id: 18, name: "ID 18" },
       ],
     },
     {
       id: 19,
-      name: "Videos",
+      name: "ID 19",
       children: [
         {
           id: 20,
-          name: "Tutorials",
+          name: "ID 20",
           children: [
-            { id: 21, name: "Basic layouts mp4" },
-            { id: 22, name: "Advanced techniques mp4" },
-            { id: 23, name: "All about app dir" },
+            { id: 21, name: "ID 21" },
+            { id: 22, name: "ID 22" },
+            { id: 23, name: "ID 23" },
           ],
         },
-        { id: 24, name: "Intro mov" },
-        { id: 25, name: "Conference introduction avi" },
+        { id: 24, name: "ID 24" },
+        { id: 25, name: "ID 25" },
       ],
     },
   ],
