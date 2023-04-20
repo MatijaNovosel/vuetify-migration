@@ -39,7 +39,7 @@
       </div>
     </div>
     <v-expand-transition>
-      <div class="v-treeview-node__children" v-if="openedNodes?.has(item.id)">
+      <div class="v-treeview-node__children" v-if="isOpen">
         <tree-view-node
           v-for="child in item.children"
           :level="level + 1"
@@ -180,15 +180,14 @@ const applyToAllChildren = (
 
 const childNodeChanged = () => {
   const id = props.item.id;
-  // Check if all children selected
   if (hasChildren.value) {
     if (allChildrenSelected.value) {
-      if (!selectedNodes!.has(id)) nodeSelected();
+      if (!isSelected.value) nodeSelected();
     } else {
       if (atLeastOneChildSelected.value) {
-        if (!selectedNodes!.has(id)) selectNode(id);
+        if (!isSelected.value) selectNode(id);
       } else {
-        if (selectedNodes!.has(id)) nodeSelected();
+        if (isSelected.value) nodeSelected();
       }
     }
     emit("change", id);
