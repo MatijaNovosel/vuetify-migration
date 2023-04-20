@@ -168,7 +168,7 @@ const state = reactive({
     datePicker: true,
     timePicker: true,
     calendar: false,
-    treeView: false,
+    treeView: true,
   },
 });
 </script>
