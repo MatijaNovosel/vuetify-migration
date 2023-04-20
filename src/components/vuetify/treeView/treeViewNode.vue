@@ -196,13 +196,22 @@ const childNodeChanged = () => {
 };
 
 const nodeSelected = () => {
-  toggleNode(props.item.id);
   if (hasChildren.value) {
-    const isSelectedAlready = selectedNodes!.has(props.item.id);
-    applyToAllChildren(
-      props.item,
-      isSelectedAlready ? selectNode : unselectNode
-    );
+    if (
+      isSelected.value &&
+      atLeastOneChildSelected.value &&
+      !allChildrenSelected.value
+    ) {
+      applyToAllChildren(props.item, selectNode);
+    } else {
+      toggleNode(props.item.id);
+      applyToAllChildren(
+        props.item,
+        isSelected.value ? selectNode : unselectNode
+      );
+    }
+  } else {
+    toggleNode(props.item.id);
   }
   emit("change", props.item.id);
 };
