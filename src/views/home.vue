@@ -45,7 +45,9 @@
         <v-icon color="green" icon="mdi-leaf" class="mr-3" />
         <code>
           {{
-            state.treeViewSelection.length ? state.treeViewSelection : "None"
+            state.treeViewSelection.length
+              ? state.treeViewSelection.sort()
+              : "None"
           }}
         </code>
       </span>

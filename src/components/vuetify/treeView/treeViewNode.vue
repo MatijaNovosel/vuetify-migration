@@ -46,7 +46,7 @@
           :key="child.id"
           :item="child"
           :color="color"
-          @change="onNodeChanged"
+          @change="childNodeChanged"
         />
       </div>
     </v-expand-transition>
@@ -60,7 +60,6 @@ import { findNode } from "./helper";
 import { TreeViewNodeItem } from "./models";
 import "./treeView.sass";
 
-const { emit: emitNodeSelect } = useEventBus<number>("select-node");
 const { emit: emitNodeOpen } = useEventBus<number>("open-node");
 
 const emit = defineEmits(["change"]);
@@ -141,34 +140,70 @@ const hasChildren = computed(
   () => !!props.item.children && !!props.item.children.length
 );
 
+const allChildrenSelected = computed(() => checkChildSelectStatus("all"));
+const atLeastOneChildSelected = computed(() =>
+  checkChildSelectStatus("atLeastOne")
+);
+
 const nodeIcon = computed(() => {
   if (hasChildren.value) {
-    if (checkChildSelectStatus("all")) return "mdi-checkbox-marked";
-    if (checkChildSelectStatus("atLeastOne")) return "mdi-minus-box";
+    if (allChildrenSelected.value) return "mdi-checkbox-marked";
+    if (atLeastOneChildSelected.value) return "mdi-minus-box";
     return undefined;
   }
   return "mdi-checkbox-marked";
 });
 
-const onNodeChanged = () => {
-  // Check if all children selected
-  if (hasChildren.value) {
-    if (checkChildSelectStatus("all")) {
-      if (!selectedNodes!.has(props.item.id)) {
-        nodeSelected();
-      }
-    } else {
-      if (!checkChildSelectStatus("atLeastOne")) {
-        if (selectedNodes!.has(props.item.id)) {
-          nodeSelected();
-        }
-      }
+const unselectNode = (id: number) => selectedNodes!.delete(id);
+
+const selectNode = (id: number) => selectedNodes!.add(id);
+
+const toggleNode = (id: number) => {
+  if (selectedNodes!.has(id)) {
+    unselectNode(id);
+    return;
+  }
+  selectNode(id);
+};
+
+const applyToAllChildren = (
+  currentNode: TreeViewNodeItem,
+  fn: (id: number) => void
+) => {
+  if (currentNode.children) {
+    for (const child of currentNode.children) {
+      fn(child.id);
+      if (child.children) applyToAllChildren(child, fn);
     }
   }
 };
 
+const childNodeChanged = () => {
+  const id = props.item.id;
+  // Check if all children selected
+  if (hasChildren.value) {
+    if (allChildrenSelected.value) {
+      if (!selectedNodes!.has(id)) nodeSelected();
+    } else {
+      if (atLeastOneChildSelected.value) {
+        if (!selectedNodes!.has(id)) selectNode(id);
+      } else {
+        if (selectedNodes!.has(id)) nodeSelected();
+      }
+    }
+    emit("change", id);
+  }
+};
+
 const nodeSelected = () => {
-  emitNodeSelect(props.item.id);
+  toggleNode(props.item.id);
+  if (hasChildren.value) {
+    const isSelectedAlready = selectedNodes!.has(props.item.id);
+    applyToAllChildren(
+      props.item,
+      isSelectedAlready ? selectNode : unselectNode
+    );
+  }
   emit("change", props.item.id);
 };
 
