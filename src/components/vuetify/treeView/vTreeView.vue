@@ -30,7 +30,6 @@ const props = defineProps<{
   dense?: boolean;
   disabled?: boolean;
   filter?: () => void;
-  hoverable?: boolean;
   openAll?: boolean;
   search?: string;
   color?: string;
@@ -68,10 +67,8 @@ const state = reactive({
 
 provide("selected-nodes", state.selectedNodes);
 provide("opened-nodes", state.openedNodes);
-provide("nodes", props.items);
 
 const classes = computed(() => ({
-  "v-treeview--hoverable": props.hoverable,
   "v-treeview--dense": props.dense,
 }));
 

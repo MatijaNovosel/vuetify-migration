@@ -61,11 +61,12 @@ import "./treeView.sass";
 
 const { emit: emitNodeOpen } = useEventBus<number>("open-node");
 
-const emit = defineEmits(["change"]);
+const emit = defineEmits<{
+  (e: "change", id: number): void;
+}>();
 
 const selectedNodes = inject<Set<number>>("selected-nodes");
 const openedNodes = inject<Set<number>>("opened-nodes");
-const nodes = inject<TreeViewNodeItem[]>("nodes");
 
 const props = defineProps<{
   level: number;
@@ -112,37 +113,11 @@ const checkAtLeastOneChildSelected = (
   return status;
 };
 
-const classes = computed(() => ({
-  "v-treeview-node--leaf": !hasChildren.value,
-}));
-
-const isOpen = computed(() => openedNodes?.has(props.item.id));
-
-const isSelected = computed(() => selectedNodes?.has(props.item.id));
-
 const checkChildSelectStatus = (type: "all" | "atLeastOne") => {
   return type === "all"
     ? checkAllChildrenSelected(props.item, true)
     : checkAtLeastOneChildSelected(props.item, false);
 };
-
-const hasChildren = computed(
-  () => !!props.item.children && !!props.item.children.length
-);
-
-const allChildrenSelected = computed(() => checkChildSelectStatus("all"));
-const atLeastOneChildSelected = computed(() =>
-  checkChildSelectStatus("atLeastOne")
-);
-
-const nodeIcon = computed(() => {
-  if (hasChildren.value) {
-    if (allChildrenSelected.value) return "mdi-checkbox-marked";
-    if (atLeastOneChildSelected.value) return "mdi-minus-box";
-    return undefined;
-  }
-  return "mdi-checkbox-marked";
-});
 
 const unselectNode = (id: number) => selectedNodes!.delete(id);
 
@@ -208,4 +183,31 @@ const nodeSelected = () => {
 const openNode = () => {
   if (hasChildren.value) emitNodeOpen(props.item.id);
 };
+
+const classes = computed(() => ({
+  "v-treeview-node--leaf": !hasChildren.value,
+}));
+
+const isOpen = computed(() => openedNodes?.has(props.item.id));
+
+const isSelected = computed(() => selectedNodes?.has(props.item.id));
+
+const hasChildren = computed(
+  () => !!props.item.children && !!props.item.children.length
+);
+
+const allChildrenSelected = computed(() => checkChildSelectStatus("all"));
+
+const atLeastOneChildSelected = computed(() =>
+  checkChildSelectStatus("atLeastOne")
+);
+
+const nodeIcon = computed(() => {
+  if (hasChildren.value) {
+    if (allChildrenSelected.value) return "mdi-checkbox-marked";
+    if (atLeastOneChildSelected.value) return "mdi-minus-box";
+    return undefined;
+  }
+  return "mdi-checkbox-marked";
+});
 </script>
