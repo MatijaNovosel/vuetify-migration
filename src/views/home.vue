@@ -83,10 +83,10 @@
 </template>
 
 <script lang="ts" setup>
-import vDatePicker from "@/components/vuetify/datePicker/vDatePicker.vue";
-import vTimePicker from "@/components/vuetify/timePicker/vTimePicker.vue";
-import vTreeView from "@/components/vuetify/treeView/vTreeView.vue";
-import vSpeedDial from "@/components/vuetify/vSpeedDial.vue";
+import vDatePicker from "@/components/vuetify/datePicker/VDatePicker.vue";
+import vTimePicker from "@/components/vuetify/timePicker/VTimePicker.vue";
+import vTreeView from "@/components/vuetify/treeView/VTreeView.vue";
+import vSpeedDial from "@/components/vuetify/VSpeedDial.vue";
 import { reactive } from "vue";
 
 const state = reactive({
