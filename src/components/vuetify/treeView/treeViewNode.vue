@@ -22,7 +22,7 @@
           readonly
           :color="color"
           :model-value="isSelected"
-          @click.stop="emitNodeSelect(item.id)"
+          @click.stop="nodeSelected"
         />
         <div class="v-treeview-node__prepend">
           <slot name="prepend" />
@@ -46,6 +46,7 @@
           :key="child.id"
           :item="child"
           :color="color"
+          @change="onNodeChanged"
         />
       </div>
     </v-expand-transition>
@@ -61,6 +62,8 @@ import "./treeView.sass";
 
 const { emit: emitNodeSelect } = useEventBus<number>("select-node");
 const { emit: emitNodeOpen } = useEventBus<number>("open-node");
+
+const emit = defineEmits(["change"]);
 
 const selectedNodes = inject<Set<number>>("selected-nodes");
 const openedNodes = inject<Set<number>>("opened-nodes");
@@ -89,7 +92,7 @@ const checkAllChildrenSelected = (
       }
     }
   }
-  return status && selectedNodes!.has(currentNode.id);
+  return status;
 };
 
 const checkAtLeastOneChildSelected = (
@@ -108,7 +111,7 @@ const checkAtLeastOneChildSelected = (
       }
     }
   }
-  return status || selectedNodes!.has(currentNode.id);
+  return status;
 };
 
 const classes = computed(() => ({
@@ -139,13 +142,33 @@ const hasChildren = computed(
 );
 
 const nodeIcon = computed(() => {
-  if (props.item.children) {
+  if (hasChildren.value) {
     if (checkChildSelectStatus("all")) return "mdi-checkbox-marked";
     if (checkChildSelectStatus("atLeastOne")) return "mdi-minus-box";
     return undefined;
   }
   return "mdi-checkbox-marked";
 });
+
+const onNodeChanged = (id: number) => {
+  // Check if all children selected
+  if (hasChildren.value) {
+    if (checkChildSelectStatus("all")) {
+      if (!selectedNodes!.has(props.item.id)) {
+        nodeSelected();
+      }
+    } else {
+      if (!checkChildSelectStatus("atLeastOne")) {
+        nodeSelected();
+      }
+    }
+  }
+};
+
+const nodeSelected = () => {
+  emitNodeSelect(props.item.id);
+  emit("change", props.item.id);
+};
 
 const openNode = () => {
   if (hasChildren.value) emitNodeOpen(props.item.id);
