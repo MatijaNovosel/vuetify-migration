@@ -56,7 +56,6 @@
 <script lang="ts" setup>
 import { useEventBus } from "@vueuse/core";
 import { computed, inject } from "vue";
-import { findNode } from "./helper";
 import { TreeViewNodeItem } from "./models";
 import "./treeView.sass";
 
@@ -122,18 +121,9 @@ const isOpen = computed(() => openedNodes?.has(props.item.id));
 const isSelected = computed(() => selectedNodes?.has(props.item.id));
 
 const checkChildSelectStatus = (type: "all" | "atLeastOne") => {
-  let res = true;
-  for (const node of nodes!) {
-    const n = findNode(props.item.id, node);
-    if (n) {
-      const selectionStatus =
-        type === "all"
-          ? checkAllChildrenSelected(n, true)
-          : checkAtLeastOneChildSelected(n, false);
-      res = selectionStatus;
-    }
-  }
-  return res;
+  return type === "all"
+    ? checkAllChildrenSelected(props.item, true)
+    : checkAtLeastOneChildSelected(props.item, false);
 };
 
 const hasChildren = computed(
