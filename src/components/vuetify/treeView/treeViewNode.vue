@@ -119,29 +119,20 @@ const isOpen = computed(() => openedNodes?.has(props.item.id));
 
 const isSelected = computed(() => selectedNodes?.has(props.item.id));
 
-const allChildrenSelected = computed(() => {
+const checkChildSelectStatus = (type: "all" | "atLeastOne") => {
   let res = true;
   for (const node of nodes!) {
     const n = findNode(props.item.id, node);
     if (n) {
-      const allSelected = checkAllChildrenSelected(n, true);
-      res = allSelected;
+      const selectionStatus =
+        type === "all"
+          ? checkAllChildrenSelected(n, true)
+          : checkAtLeastOneChildSelected(n, false);
+      res = selectionStatus;
     }
   }
   return res;
-});
-
-const atLeastOneChildSelected = computed(() => {
-  let res = true;
-  for (const node of nodes!) {
-    const n = findNode(props.item.id, node);
-    if (n) {
-      const atLeastOneSelected = checkAtLeastOneChildSelected(n, false);
-      res = atLeastOneSelected;
-    }
-  }
-  return res;
-});
+};
 
 const hasChildren = computed(
   () => !!props.item.children && !!props.item.children.length
@@ -149,16 +140,14 @@ const hasChildren = computed(
 
 const nodeIcon = computed(() => {
   if (props.item.children) {
-    if (allChildrenSelected.value) return "mdi-checkbox-marked";
-    if (atLeastOneChildSelected.value) return "mdi-minus-box";
+    if (checkChildSelectStatus("all")) return "mdi-checkbox-marked";
+    if (checkChildSelectStatus("atLeastOne")) return "mdi-minus-box";
     return undefined;
   }
   return "mdi-checkbox-marked";
 });
 
 const openNode = () => {
-  if (!!props.item.children && !!props.item.children.length) {
-    emitNodeOpen(props.item.id);
-  }
+  if (hasChildren.value) emitNodeOpen(props.item.id);
 };
 </script>
