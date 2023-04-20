@@ -7,7 +7,7 @@
       :second="state.inputSecond"
       :selecting="state.selecting"
       :use-seconds="useSeconds"
-      @update:selecting="(value: 1 | 2 | 3) => (state.selecting = value)"
+      @update:selecting="(value: SelectingTimes) => (state.selecting = value)"
     />
     <time-picker-clock
       color="green"
@@ -36,13 +36,13 @@ import { SelectingTimes } from "./constants";
 import timePickerClock from "./timePickerClock.vue";
 import timePickerTitle from "./timePickerTitle.vue";
 
-const emit = defineEmits([
-  "change",
-  "click:hour",
-  "click:minute",
-  "click:second",
-  "update:modelValue",
-]);
+const emit = defineEmits<{
+  (e: "change", time: string): void;
+  (e: "click:hour", value: number): void;
+  (e: "click:minute", value: number): void;
+  (e: "click:second", value: number): void;
+  (e: "update:modelValue", value: string): void;
+}>();
 
 const props = defineProps<{
   disabled?: boolean;

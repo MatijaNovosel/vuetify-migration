@@ -36,7 +36,9 @@ import { computed } from "vue";
 import { createNativeLocaleFormatter } from "./helpers";
 import { DatePickerAllowedDatesFunction } from "./models";
 
-const emit = defineEmits(["input"]);
+const emit = defineEmits<{
+  (e: "input", value: string): void;
+}>();
 
 const props = defineProps<{
   localeFirstDayOfYear?: string | number;

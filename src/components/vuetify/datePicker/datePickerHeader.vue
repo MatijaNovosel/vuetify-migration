@@ -28,7 +28,10 @@
 import { computed } from "vue";
 import { createNativeLocaleFormatter, monthChange } from "./helpers";
 
-const emit = defineEmits(["input", "toggle"]);
+const emit = defineEmits<{
+  (e: "input", value: string): void;
+  (e: "toggle"): void;
+}>();
 
 const props = defineProps<{
   disabled?: boolean;

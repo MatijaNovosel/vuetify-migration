@@ -24,7 +24,9 @@ import { TreeViewNodeItem, TreeViewSelectionMode } from "./models";
 import "./treeView.sass";
 import treeViewNode from "./treeViewNode.vue";
 
-const emit = defineEmits(["update:modelValue"]);
+const emit = defineEmits<{
+  (e: "update:modelValue", values: number[]): void;
+}>();
 
 const props = defineProps<{
   dense?: boolean;

@@ -43,7 +43,9 @@
 import { computed } from "vue";
 import { SelectingTimes } from "./constants";
 
-const emit = defineEmits(["update:selecting"]);
+const emit = defineEmits<{
+  (e: "update:selecting", type: SelectingTimes): void;
+}>();
 
 const props = defineProps<{
   disabled?: boolean;

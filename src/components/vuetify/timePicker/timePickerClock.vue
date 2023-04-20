@@ -58,7 +58,10 @@ interface Point {
   y: number;
 }
 
-const emit = defineEmits(["input", "change"]);
+const emit = defineEmits<{
+  (e: "input", value: number): void;
+  (e: "change", value: number): void;
+}>();
 
 const clock = ref<HTMLElement | null>(null);
 const innerClock = ref<HTMLElement | null>(null);

@@ -27,7 +27,9 @@
 <script lang="ts" setup>
 import { computed } from "vue";
 
-const emit = defineEmits(["select-year"]);
+const emit = defineEmits<{
+  (e: "select-year", value: boolean): void;
+}>();
 
 const props = defineProps<{
   date?: string;

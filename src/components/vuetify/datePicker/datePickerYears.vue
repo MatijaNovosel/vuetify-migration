@@ -20,7 +20,10 @@
 import { computed, onMounted, ref } from "vue";
 import { createNativeLocaleFormatter } from "./helpers";
 
-const emit = defineEmits(["input"]);
+const emit = defineEmits<{
+  (e: "input", value: number): void;
+}>();
+
 const yearList = ref<HTMLElement | null>(null);
 
 const props = defineProps<{

@@ -74,7 +74,10 @@ import {
   DatePickerValue,
 } from "./models";
 
-const emit = defineEmits(["update:modelValue", "change"]);
+const emit = defineEmits<{
+  (e: "update:modelValue", value: string | string[]): void;
+  (e: "change", value: string | string[]): void;
+}>();
 
 const props = defineProps<{
   allowedDates?: DatePickerAllowedDatesFunction;
