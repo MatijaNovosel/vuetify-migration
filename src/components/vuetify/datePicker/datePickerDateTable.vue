@@ -31,9 +31,8 @@
 </template>
 
 <script lang="ts" setup>
-import { createRange } from "@/utils/helpers";
 import { computed } from "vue";
-import { createNativeLocaleFormatter } from "./helpers";
+import { createNativeLocaleFormatter, createRange } from "./helpers";
 import { DatePickerAllowedDatesFunction } from "./models";
 
 const emit = defineEmits<{

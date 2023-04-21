@@ -50,11 +50,6 @@
 </template>
 
 <script lang="ts" setup>
-import {
-  convertToUnit,
-  sanitizeDateString,
-  wrapInArray,
-} from "@/utils/helpers";
 import { computed, onMounted, reactive, watch } from "vue";
 import { titleFormats } from "./constants";
 import DatePickerDateTable from "./datePickerDateTable.vue";
@@ -63,9 +58,12 @@ import DatePickerMonthTable from "./datePickerMonthTable.vue";
 import DatePickerTitle from "./datePickerTitle.vue";
 import DatePickerYears from "./datePickerYears.vue";
 import {
+  convertToUnit,
   createNativeLocaleFormatter,
   daysInMonth,
   isDateAllowed,
+  sanitizeDateString,
+  wrapInArray,
 } from "./helpers";
 import {
   DatePickerAllowedDatesFunction,

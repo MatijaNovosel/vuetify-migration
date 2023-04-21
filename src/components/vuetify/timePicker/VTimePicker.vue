@@ -30,9 +30,9 @@
 </template>
 
 <script lang="ts" setup>
-import { convertToUnit } from "@/utils/helpers";
 import { computed, onMounted, reactive } from "vue";
 import { SelectingTimes } from "./constants";
+import { convertToUnit } from "./helpers";
 import timePickerClock from "./timePickerClock.vue";
 import timePickerTitle from "./timePickerTitle.vue";
 
