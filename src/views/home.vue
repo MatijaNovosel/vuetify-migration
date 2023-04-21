@@ -46,7 +46,7 @@
         <code>
           {{
             state.treeViewSelection.length
-              ? state.treeViewSelection.sort()
+              ? state.treeViewSelection.sort((a, b) => a - b)
               : "None"
           }}
         </code>
@@ -92,7 +92,7 @@ import { reactive } from "vue";
 const state = reactive({
   date: new Date().toISOString().substring(0, 10),
   time: null,
-  treeViewSelection: [],
+  treeViewSelection: [] as number[],
   treeViewItems: [
     {
       id: 1,
