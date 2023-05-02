@@ -559,6 +559,13 @@ deep-is@^0.1.3:
   resolved "https://registry.yarnpkg.com/deep-is/-/deep-is-0.1.4.tgz#a6f2dce612fadd2ef1f519b73551f17e85199831"
   integrity sha512-oIPzksmTg4/MriiaYGO+okXDT7ztn/w3Eptv/+gSIdMdKsJo0u4CfYNFJPy+4SKMuCqGw2wxnA+URMg3t8a/bQ==
 
+degree-picker@^0.0.2:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/degree-picker/-/degree-picker-0.0.2.tgz#74dea1b01a44d47ccce7231e116a0b7a8a075b49"
+  integrity sha512-KFHtwhF8louekK20MNbnjgc886t06SOX3s2kw9t1cgUF7UWBBzSkaBd5jdSkhoghRJrMi6gn4ldDttf60/w1Tg==
+  dependencies:
+    vue "^3.2.47"
+
 dir-glob@^3.0.1:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/dir-glob/-/dir-glob-3.0.1.tgz#56dbf73d992a4a93ba1584f4534063fd2e41717f"
@@ -1607,7 +1614,7 @@ vue-tsc@^1.0.9:
     "@volar/vue-language-core" "1.2.0"
     "@volar/vue-typescript" "1.2.0"
 
-vue@^3.2.38:
+vue@^3.2.38, vue@^3.2.47:
   version "3.2.47"
   resolved "https://registry.yarnpkg.com/vue/-/vue-3.2.47.tgz#3eb736cbc606fc87038dbba6a154707c8a34cff0"
   integrity sha512-60188y/9Dc9WVrAZeUVSDxRQOZ+z+y5nO2ts9jWXSTkMvayiWxCWOWtBQoYjLeccfXkiiPZWAHcV+WTPhkqJHQ==
