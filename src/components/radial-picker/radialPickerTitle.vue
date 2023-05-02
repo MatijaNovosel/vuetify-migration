@@ -54,7 +54,7 @@ const props = defineProps<{
   second?: number | null;
   readonly?: boolean;
   useSeconds?: boolean;
-  color?: string;r
+  color?: string;
   selecting: SelectingTimes;
 }>();
 
