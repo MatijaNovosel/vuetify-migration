@@ -1,7 +1,7 @@
 <template>
   <div class="picker__title" :class="classes">
-    <div class="radial-picker-title">
-      <div class="radial-picker-title__time">
+    <div class="degree-picker-title">
+      <div class="degree-picker-title__time">
         <div
           @click="emit('update:selecting', SelectingTimes.Hour)"
           class="picker__title__btn"
@@ -21,19 +21,6 @@
         >
           {{ minute == null ? "--" : minute.toString().padStart(2, "0") }}
         </div>
-        <template v-if="useSeconds">
-          <span> : </span>
-          <div
-            @click="emit('update:selecting', SelectingTimes.Second)"
-            class="picker__title__btn"
-            :class="{
-              'picker__title__btn--active':
-                SelectingTimes.Second === selecting,
-            }"
-          >
-            {{ second == null ? "--" : second.toString().padStart(2, "0") }}
-          </div>
-        </template>
       </div>
     </div>
   </div>
@@ -51,9 +38,7 @@ const props = defineProps<{
   disabled?: boolean;
   hour?: number | null;
   minute?: number | null;
-  second?: number | null;
   readonly?: boolean;
-  useSeconds?: boolean;
   color?: string;
   selecting: SelectingTimes;
 }>();
@@ -92,13 +77,13 @@ const classes = computed(() => ({
         &:hover:not(:focus)
           opacity: 1
 
-.radial-picker-title
-  color: $radial-picker-title-color
+.degree-picker-title
+  color: $degree-picker-title-color
   display: flex
   line-height: 1
   justify-content: flex-end
 
-.radial-picker-title__time
+.degree-picker-title__time
   white-space: nowrap
   direction: ltr
 
@@ -106,13 +91,13 @@ const classes = computed(() => ({
   span
     align-items: center
     display: inline-flex
-    height: $radial-picker-title-btn-height
-    font-size: $radial-picker-title-btn-height
+    height: $degree-picker-title-btn-height
+    font-size: $degree-picker-title-btn-height
     justify-content: center
 
 .picker--time
   padding: 0
 
-  .radial-picker-title__time
+  .degree-picker-title__time
     text-align: center
 </style>

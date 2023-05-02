@@ -1,6 +1,6 @@
 <template>
   <div class="picker__body">
-    <div class="radial-picker-clock__container">
+    <div class="degree-picker-clock__container">
       <div
         ref="clock"
         @mousedown="onMouseDown"
@@ -10,26 +10,26 @@
         @touchend="onMouseUp"
         @mousemove="onDragMove"
         @touchmove="onDragMove"
-        class="radial-picker-clock bg-grey-lighten-3"
+        class="degree-picker-clock bg-grey-lighten-3"
         :class="{
-          'radial-picker-clock--indeterminate': value == null,
+          'degree-picker-clock--indeterminate': value == null,
         }"
       >
-        <div ref="innerClock" class="radial-picker-clock__inner">
+        <div ref="innerClock" class="degree-picker-clock__inner">
           <div
-            class="radial-picker-clock__hand"
+            class="degree-picker-clock__hand"
             :style="clockHandStyle"
             :class="{
               [`bg-${color || 'accent'}`]: value !== null,
-              'radial-picker-clock__hand--inner': isInner(value),
+              'degree-picker-clock__hand--inner': isInner(value),
             }"
           />
           <span
             v-for="v in values"
             :key="v"
-            class="radial-picker-clock__item"
+            class="degree-picker-clock__item"
             :class="{
-              'radial-picker-clock__item--active': v === displayedValue,
+              'degree-picker-clock__item--active': v === displayedValue,
               [`bg-${color || 'accent'}`]:
                 value !== null && v === displayedValue,
             }"
@@ -37,9 +37,7 @@
           >
             <span>
               {{
-                selecting === SelectingTimes.Hour
-                  ? v
-                  : v.toString().padStart(2, "0")
+                  v.toString().padStart(2, "0")
               }}
             </span>
           </span>
@@ -195,7 +193,6 @@ const onDragMove = (e: MouseEvent | TouchEvent) => {
       (innerWidth + innerWidth * innerRadiusScale) / 4;
   const checksCount = Math.ceil(15 / degreesPerUnit.value);
   let value;
-
   for (let i = 0; i < checksCount; i++) {
     value = angleToValue(handAngle + i * degreesPerUnit.value, insideClick);
     return setMouseDownValue(value);
@@ -225,7 +222,7 @@ watch(
 <style lang="sass" scoped>
 @import "./variables.scss"
 
-.radial-picker-clock
+.degree-picker-clock
   border-radius: 100%
   position: relative
   transition: 0.3s cubic-bezier(0.25, 0.8, 0.5, 1)
@@ -237,17 +234,17 @@ watch(
   &__item--disabled
     color: pink
 
-    &.radial-picker-clock__item--active
+    &.degree-picker-clock__item--active
       color: purple
 
   &--indeterminate
-    .radial-picker-clock__hand
+    .degree-picker-clock__hand
       background-color: #bdbdbd
 
     &:after
       color: yellow
 
-    .radial-picker-clock__item--active
+    .degree-picker-clock__item--active
       background-color: #bdbdbd
 
   &__container
@@ -255,13 +252,13 @@ watch(
     flex-direction: column
     flex-basis: 290px
     justify-content: center
-    padding: $radial-picker-clock-padding
+    padding: $degree-picker-clock-padding
 
   &__hand
-    height: $radial-picker-clock-hand-height
-    width: $radial-picker-clock-hand-width
+    height: $degree-picker-clock-hand-height
+    width: $degree-picker-clock-hand-width
     bottom: 50%
-    left: $radial-picker-clock-hand-left
+    left: $degree-picker-clock-hand-left
     transform-origin: center bottom
     position: absolute
     will-change: transform
@@ -269,23 +266,23 @@ watch(
 
     &:before
       background: transparent
-      border-width: $radial-picker-clock-end-border-width
-      border-style: $radial-picker-clock-end-border-style
+      border-width: $degree-picker-clock-end-border-width
+      border-style: $degree-picker-clock-end-border-style
       border-color: v-bind(color)
       border-radius: 100%
-      width: $radial-picker-clock-end-size
-      height: $radial-picker-clock-end-size
+      width: $degree-picker-clock-end-size
+      height: $degree-picker-clock-end-size
       content: ''
       position: absolute
-      top: $radial-picker-clock-end-top
+      top: $degree-picker-clock-end-top
       left: 50%
       transform: translate(-50%, -50%)
 
     &:after
       content: ''
       position: absolute
-      height: $radial-picker-clock-center-size
-      width: $radial-picker-clock-center-size
+      height: $degree-picker-clock-center-size
+      width: $degree-picker-clock-center-size
       top: 100%
       left: 50%
       border-radius: 100%
@@ -295,30 +292,30 @@ watch(
       transform: translate(-50%, -50%)
 
     &--inner:after
-      height: $radial-picker-clock-inner-hand-height
+      height: $degree-picker-clock-inner-hand-height
 
 .picker--full-width
-  .radial-picker-clock__container
-    max-width: $radial-picker-clock-max-width
+  .degree-picker-clock__container
+    max-width: $degree-picker-clock-max-width
 
-.radial-picker-clock__inner
+.degree-picker-clock__inner
   position: absolute
-  bottom: $radial-picker-clock-inner-offset
-  left: $radial-picker-clock-inner-offset
-  right: $radial-picker-clock-inner-offset
-  top: $radial-picker-clock-inner-offset
+  bottom: $degree-picker-clock-inner-offset
+  left: $degree-picker-clock-inner-offset
+  right: $degree-picker-clock-inner-offset
+  top: $degree-picker-clock-inner-offset
 
-.radial-picker-clock__item
+.degree-picker-clock__item
   align-items: center
   border-radius: 100%
   cursor: default
   display: flex
-  font-size: $radial-picker-number-font-size
+  font-size: $degree-picker-number-font-size
   justify-content: center
-  height: $radial-picker-indicator-size
+  height: $degree-picker-indicator-size
   position: absolute
   text-align: center
-  width: $radial-picker-indicator-size
+  width: $degree-picker-indicator-size
   user-select: none
   transform: translate(-50%, -50%)
 
@@ -336,8 +333,8 @@ watch(
     transform: translate(-50%, -50%)
 
   &:after, &:before
-    height: $radial-picker-indicator-size
-    width: $radial-picker-indicator-size
+    height: $degree-picker-indicator-size
+    width: $degree-picker-indicator-size
 
   &--active
     color: white
