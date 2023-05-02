@@ -8,8 +8,21 @@
       <v-list-item-subtitle> Admin </v-list-item-subtitle>
     </v-list-item>
     <v-spacer />
-    <v-btn icon>
-      <v-icon color="red"> mdi-power </v-icon>
-    </v-btn>
+    <v-btn
+      exact
+      icon="mdi-account"
+      color="red"
+      :to="{ name: ROUTE_NAMES.ADMIN }"
+    />
+    <v-btn
+      exact
+      icon="mdi-home"
+      color="green"
+      :to="{ name: ROUTE_NAMES.HOME }"
+    />
   </v-app-bar>
 </template>
+
+<script lang="ts" setup>
+import { ROUTE_NAMES } from "@/router/routeNames";
+</script>

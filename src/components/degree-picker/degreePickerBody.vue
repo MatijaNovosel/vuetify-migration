@@ -15,30 +15,19 @@
           'degree-picker-clock--indeterminate': value == null,
         }"
       >
-        <div ref="innerClock" class="degree-picker-clock__inner">
-          <div
-            class="degree-picker-clock__hand"
-            :style="clockHandStyle"
-            :class="{
-              [`bg-${color || 'accent'}`]: value !== null,
-              'degree-picker-clock__hand--inner': isInner(value),
-            }"
-          />
+        <div class="degree-picker-clock__inner">
+          <div class="degree-picker-clock__hand" :style="clockHandStyle" />
           <span
             v-for="v in values"
             :key="v"
             class="degree-picker-clock__item"
             :class="{
               'degree-picker-clock__item--active': v === displayedValue,
-              [`bg-${color || 'accent'}`]:
-                value !== null && v === displayedValue,
             }"
             :style="getTransform(v)"
           >
             <span>
-              {{
-                  v.toString().padStart(2, "0")
-              }}
+              {{ v }}
             </span>
           </span>
         </div>
@@ -49,7 +38,6 @@
 
 <script lang="ts" setup>
 import { computed, reactive, ref, watch } from "vue";
-import { SelectingTimes } from "./constants";
 
 interface Point {
   x: number;
@@ -62,16 +50,12 @@ const emit = defineEmits<{
 }>();
 
 const clock = ref<HTMLElement | null>(null);
-const innerClock = ref<HTMLElement | null>(null);
-
-const innerRadiusScale = 0.62;
 
 const props = defineProps<{
   disabled?: boolean;
   readonly?: boolean;
   color?: string;
   value: number | null;
-  selecting: number;
   min: number;
   max: number;
   step: number;
@@ -86,7 +70,7 @@ const state = reactive({
 
 const values = computed(() => {
   const res = [];
-  for (let value = props.min; value <= props.max; value = value + props.step) {
+  for (let value = props.min; value < props.max; value = value + props.step) {
     res.push(value);
   }
   return res;
@@ -94,43 +78,26 @@ const values = computed(() => {
 
 const count = computed(() => props.max - props.min + 1);
 
-const roundCount = computed(() =>
-  selectingHour.value ? count.value / 2 : count.value
-);
-
-const degreesPerUnit = computed(() => 360 / roundCount.value);
+const degreesPerUnit = computed(() => 360 / count.value);
 
 const degrees = computed(() => (degreesPerUnit.value * Math.PI) / 180);
-
-const selectingHour = computed(() => props.selecting === SelectingTimes.Hour);
 
 const clockHandStyle = computed(() => ({
   transform: `rotate(${
     degreesPerUnit.value * (displayedValue.value - props.min)
-  }deg) scaleY(${handScale(displayedValue.value)})`,
+  }deg)`,
+  backgroundColor: props.value !== null ? props.color : undefined,
 }));
 
 const displayedValue = computed(() =>
   props.value == null ? props.min : props.value
 );
 
-const isInner = (value: number | null) => {
-  if (value)
-    return selectingHour.value && value - props.min >= roundCount.value;
-  return false;
-};
-
-const handScale = (value: number) => (isInner(value) ? innerRadiusScale : 1);
-
 const getPosition = (value: number) => {
   const rotateRadians = Math.PI / 180;
   return {
-    x:
-      Math.sin((value - props.min) * degrees.value + rotateRadians) *
-      handScale(value),
-    y:
-      -Math.cos((value - props.min) * degrees.value + rotateRadians) *
-      handScale(value),
+    x: Math.sin((value - props.min) * degrees.value + rotateRadians) * 1,
+    y: -Math.cos((value - props.min) * degrees.value + rotateRadians) * 1,
   };
 };
 
@@ -139,6 +106,10 @@ const getTransform = (i: number) => {
   return {
     left: `${50 + x * 50}%`,
     top: `${50 + y * 50}%`,
+    backgroundColor:
+      props.value !== null && i === displayedValue.value
+        ? props.color
+        : undefined,
   };
 };
 
@@ -154,15 +125,11 @@ const angle = (center: Point, p1: Point) => {
   return Math.abs((value * 180) / Math.PI);
 };
 
-const angleToValue = (angle: number, insideClick: boolean) => {
+const angleToValue = (angle: number) => {
   const value =
-    ((Math.round(angle / degreesPerUnit.value) +
-      (insideClick ? roundCount.value : 0)) %
-      count.value) +
-    props.min;
-  // Necessary to fix edge case when selecting left part of the value(s) at 12 o'clock
+    ((Math.round(angle / degreesPerUnit.value) + 0) % count.value) + props.min;
   if (angle < 360 - degreesPerUnit.value / 2) return value;
-  return insideClick ? props.max - roundCount.value + 1 : props.min;
+  return props.min;
 };
 
 const update = (value: number) => {
@@ -182,19 +149,14 @@ const onDragMove = (e: MouseEvent | TouchEvent) => {
   e.preventDefault();
   if ((!state.isDragging && e.type !== "click") || !clock.value) return;
   const { width, top, left } = clock.value.getBoundingClientRect();
-  const { width: innerWidth } = innerClock.value!.getBoundingClientRect();
   const { clientX, clientY } = "touches" in e ? e.touches[0] : e;
   const center = { x: width / 2, y: -width / 2 };
   const coords = { x: clientX - left, y: top - clientY };
   const handAngle = Math.round(angle(center, coords) - 0 + 360) % 360;
-  const insideClick =
-    selectingHour.value &&
-    euclidean(center, coords) <
-      (innerWidth + innerWidth * innerRadiusScale) / 4;
   const checksCount = Math.ceil(15 / degreesPerUnit.value);
   let value;
   for (let i = 0; i < checksCount; i++) {
-    value = angleToValue(handAngle + i * degreesPerUnit.value, insideClick);
+    value = angleToValue(handAngle + i * degreesPerUnit.value);
     return setMouseDownValue(value);
   }
 };
