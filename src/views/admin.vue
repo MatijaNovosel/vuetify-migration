@@ -12,6 +12,8 @@
 </template>
 
 <script lang="ts" setup>
+import { DegreePicker } from "degree-picker";
+import "degree-picker/dist/style.css";
 import { ref } from "vue";
 
 const degrees = ref(0);

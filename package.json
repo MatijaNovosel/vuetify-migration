@@ -10,7 +10,7 @@
   "dependencies": {
     "@mdi/font": "7.0.96",
     "@vueuse/core": "^9.13.0",
-    "degree-picker": "^0.0.2",
+    "degree-picker": "^0.0.15",
     "matija-utils": "^1.0.29",
     "pinia": "^2.0.23",
     "roboto-fontface": "*",

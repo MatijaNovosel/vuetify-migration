@@ -559,10 +559,10 @@ deep-is@^0.1.3:
   resolved "https://registry.yarnpkg.com/deep-is/-/deep-is-0.1.4.tgz#a6f2dce612fadd2ef1f519b73551f17e85199831"
   integrity sha512-oIPzksmTg4/MriiaYGO+okXDT7ztn/w3Eptv/+gSIdMdKsJo0u4CfYNFJPy+4SKMuCqGw2wxnA+URMg3t8a/bQ==
 
-degree-picker@^0.0.2:
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/degree-picker/-/degree-picker-0.0.2.tgz#74dea1b01a44d47ccce7231e116a0b7a8a075b49"
-  integrity sha512-KFHtwhF8louekK20MNbnjgc886t06SOX3s2kw9t1cgUF7UWBBzSkaBd5jdSkhoghRJrMi6gn4ldDttf60/w1Tg==
+degree-picker@^0.0.15:
+  version "0.0.15"
+  resolved "https://registry.yarnpkg.com/degree-picker/-/degree-picker-0.0.15.tgz#07de592d227c25016d0f8ed32b059975853f3a60"
+  integrity sha512-MyRJXzefrj+3kyXT/23vHkT86ySp8NaTYDmmsnlqCOOJfVaOpSn0eYqSxPSkvSsQznVmqxQzq9eH31rn/72+Eg==
   dependencies:
     vue "^3.2.47"
 
